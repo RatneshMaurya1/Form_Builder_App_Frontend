@@ -50,6 +50,7 @@ form > button {
   border: none;
   border-radius: 12px;
   margin-top: 20px;
+  cursor: pointer;
 }
 .container > h3 {
   color: #ffffff;
