@@ -69,6 +69,7 @@
   flex-direction: column;
 }
 .buildText > h1 {
+  font-family: "Outfit";
   font-size: 65px;
   text-align: center;
   background: linear-gradient(90deg, #4b83ff 0%, #b794f4 100%);

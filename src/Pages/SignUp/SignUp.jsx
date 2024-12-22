@@ -55,7 +55,10 @@ const SignUp = () => {
             password:"",
             confirmPassword:""
         });
-        // navigate("/")
+        localStorage.setItem("token",response.token)
+        localStorage.setItem("userId",response.data.id)
+        localStorage.setItem("name",response.data.name)
+        navigate("/dashboard")
       } else {
         toast.error(response.message);
       }

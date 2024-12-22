@@ -43,8 +43,8 @@ const Login = () => {
             });
             localStorage.setItem("token",response.token)
             localStorage.setItem("userId",response.user._id)
-            // logIn(response.user.name)
-            // navigate("/home")
+            localStorage.setItem("name",response.user.name)
+            navigate("/dashboard")
           } else {
             toast.error(response.message);
           }
