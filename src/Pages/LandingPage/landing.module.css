@@ -1,0 +1,214 @@
+.container {
+  height: auto;
+  width: 100%;
+  background: linear-gradient(0deg, #121212, #121212),
+    linear-gradient(0deg, #171923, #171923),
+    linear-gradient(0deg, #171923, #171923);
+}
+.navBar {
+  height: 100px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 80px;
+}
+.title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.title > p {
+  font-family: "Outfit";
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.btn {
+  display: flex;
+  gap: 15px;
+}
+.signInBtn {
+  color: #7ea6ff;
+  border: 1px solid #7ea6ff;
+  background: none;
+  height: 35px;
+  border-radius: 6px;
+  width: 74px;
+  cursor: pointer;
+}
+.createBtn {
+  background: #1a5fff;
+  box-shadow: 0px 1px 0px 0px #ffffff33 inset;
+  border: none;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 12px;
+  height: 35px;
+  width: 150px;
+  letter-spacing: 1px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.text {
+  height: auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 100px;
+  position: relative;
+}
+
+.buildText {
+  width: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.buildText > h1 {
+  font-size: 65px;
+  text-align: center;
+  background: linear-gradient(90deg, #4b83ff 0%, #b794f4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.buildText > p {
+  color: #ffffff;
+  font-family: "Open Sans";
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+  text-align: center;
+  margin: 0 20px;
+}
+.buildText > button {
+  background: #1a5fff;
+  box-shadow: 0px 1px 0px 0px #ffffff33 inset;
+  border: none;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 12px;
+  height: 58px;
+  width: 235px;
+  letter-spacing: 1px;
+  border-radius: 6px;
+  margin-top: 30px;
+}
+.container1Image {
+  position: absolute;
+  left: 0;
+}
+.container2Image {
+  position: absolute;
+  right: 0;
+  top: -70px;
+}
+.figureImage {
+  height: 900px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 80px;
+  position: relative;
+  z-index: 2;
+  padding: 70px;
+}
+.figureImage > img {
+  height: auto;
+  width: 80%;
+}
+.blurImage1 {
+  position: absolute;
+  height: auto;
+  /* width: 100%; */
+  left: 130px;
+  top: 20px;
+  z-index: -1;
+}
+.blurImage1 > img {
+  height: 100%;
+  width: 100%;
+}
+.blurImage2 {
+  position: absolute;
+  height: auto;
+  width: auto;
+  right: 130px;
+  top: 20px;
+  z-index: -1;
+}
+.blurImage2 > img {
+  height: 100%;
+  width: 100%;
+}
+.allList {
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  padding-bottom: 80px;
+}
+.list {
+  display: flex;
+  gap: 100px;
+  color: #ffffff;
+}
+.list1Image {
+  display: flex;
+  gap: 10px;
+}
+.list1Image > p {
+  font-family: "Outfit";
+  font-size: 18px;
+  font-weight: 700;
+}
+.made {
+  font-family: "Open Sans";
+  font-size: 16px;
+  font-weight: 400;
+  margin-top: 20px;
+}
+.list1 > h1 {
+  font-family: "Open Sans";
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+}
+.list2 > h3 {
+  font-family: "Outfit";
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 21.6px;
+}
+.list2Item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  font-family: "Open Sans";
+  font-size: 15px;
+  font-weight: 400;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+}
+.list3 > h3 {
+  font-family: "Outfit";
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 21.6px;
+}
+.list3Item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  font-family: "Open Sans";
+  font-size: 15px;
+  font-weight: 400;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+}
