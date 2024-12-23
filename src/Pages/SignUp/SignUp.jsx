@@ -8,6 +8,7 @@ import groupImage from "../../assets/Group2.png"
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { userSignUp } from '../../Services'
+import { useAuth } from '../../components/Context/AuthContext'
 
 const SignUp = () => {
     const [loading,setLoading] = useState(false)
@@ -18,6 +19,7 @@ const SignUp = () => {
         confirmPassword:""
     })
     const navigate = useNavigate()
+    const {logIn} = useAuth()
 
 
     
@@ -58,7 +60,8 @@ const SignUp = () => {
         localStorage.setItem("token",response.token)
         localStorage.setItem("userId",response.data.id)
         localStorage.setItem("name",response.data.name)
-        navigate("/dashboard")
+        logIn()
+        navigate(`/dashboard/${localStorage.getItem("userId")}`)
       } else {
         toast.error(response.message);
       }

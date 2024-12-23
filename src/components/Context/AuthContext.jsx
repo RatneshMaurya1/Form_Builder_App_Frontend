@@ -19,6 +19,7 @@ export const AuthProvider = ({children}) => {
         }else{
             localStorage.removeItem("name")
             localStorage.removeItem("userId")
+            localStorage.removeItem("theme")
         }
     }, [logOut]);
 

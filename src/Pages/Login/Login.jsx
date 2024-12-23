@@ -8,6 +8,7 @@ import groupImage from "../../assets/Group2.png"
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { userSignIn } from '../../Services'
+import { useAuth } from '../../components/Context/AuthContext'
 const Login = () => {
     const [loading,setLoading] = useState(false)
     const [formData,setFormData] = useState({
@@ -15,6 +16,7 @@ const Login = () => {
         password:""
       })
     const navigate = useNavigate()
+    const {logIn} = useAuth()
 
 
     
@@ -44,7 +46,8 @@ const Login = () => {
             localStorage.setItem("token",response.token)
             localStorage.setItem("userId",response.user._id)
             localStorage.setItem("name",response.user.name)
-            navigate("/dashboard")
+            logIn()
+            navigate(`/dashboard/${localStorage.getItem("userId")}`)
           } else {
             toast.error(response.message);
           }
