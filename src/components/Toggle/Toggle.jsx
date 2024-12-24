@@ -9,7 +9,7 @@ const Toggle = () => {
   const {setIsToggle} = useAuth()
 
   useEffect(() => {
-    document.body.className = isDarkMode ? styles.darkMode : styles.lightMode;
+    // document.body.className = isDarkMode ? styles.darkMode : styles.lightMode;
     localStorage.setItem("theme", isDarkMode ? "dark" : "light");
     setIsToggle(isDarkMode)
   }, [isDarkMode]);

@@ -13,6 +13,8 @@ function App() {
   const [count, setCount] = useState(0);
   const DefaultRoute = () => {
     const { isLoggedIn } = useAuth()
+
+   
   
     return isLoggedIn ? <Navigate to={`/dashboard/${localStorage.getItem("userId")}`} replace /> : <Navigate to="/landing" replace />;
   };
@@ -33,6 +35,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
         </Routes>
       </BrowserRouter>
       <Toaster />

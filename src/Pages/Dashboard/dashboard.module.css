@@ -8,6 +8,7 @@
   border-radius: 6px;
   padding: 0 10px;
 }
+
 .customSelect.dark {
   background: #1d1d1d;
   color: #ffffff;
@@ -24,6 +25,14 @@ select > option {
 select > option.optionLight {
   background: #ffffff;
   color: #1d1d1d;
+}
+.container {
+  background: #1d1d1d;
+  height: 100vh;
+  width: 100%;
+}
+.container.light {
+  background: #ffffff;
 }
 .navBar {
   height: 65px;
@@ -50,6 +59,10 @@ select > option.optionLight {
   font-weight: 600;
   line-height: 16.8px;
   text-align: left;
+  color: #ffffff;
+}
+.theme > p.light {
+  color: #000;
 }
 .navBar > button {
   position: absolute;
@@ -98,33 +111,68 @@ select > option.optionLight {
   line-height: 19.2px;
   text-align: center;
   cursor: pointer;
+  color: #ffffff;
 }
+.createFolder > p.light {
+  color: #000;
+}
+/* Folder Container Styles */
 .folders {
   display: flex;
   width: 213px;
   height: 40px;
   border-radius: 6px;
   background: #ffffff14;
-  display: flex;
   align-items: center;
   justify-content: space-around;
   flex-shrink: 0;
 }
+
 .folders.light {
   border: 1px solid #d6d6d6;
 }
-.folders > p {
-  font-family: "Open Sans";
+
+.current {
+  background-color: #ffffff;
+  color: #000;
+}
+
+.currentLight {
+  background-color: #000;
+  color: #ffffff;
+}
+
+.folderText {
+  font-family: "Open Sans", sans-serif;
   font-size: 16px;
   font-weight: 600;
   line-height: 19.2px;
   cursor: pointer;
+  color: inherit; 
 }
+
+.defaultText {
+  color: #ffffff;
+}
+
+.lightText {
+  color: #000;
+}
+
+.currentText {
+  color: #000;
+}
+
+.currentTextLight {
+  color: #ffffff;
+}
+
 .folders > img {
   width: 20px;
   height: 20px;
   cursor: pointer;
 }
+
 .form {
   display: flex;
   gap: 20px;
@@ -169,8 +217,8 @@ select > option.optionLight {
   flex-direction: column;
   position: relative;
 }
-.newForm.newLight{
-    border: 1px solid #d6d6d6;
+.newForm.newLight {
+  border: 1px solid #d6d6d6;
 }
 .newForm > p {
   font-family: "Open Sans";
@@ -181,14 +229,14 @@ select > option.optionLight {
   color: #ffffff;
   cursor: pointer;
 }
-.newForm > p.light{
-    color: #000000;
+.newForm > p.light {
+  color: #000000;
 }
-.newForm > img{
-    position: absolute;
-    width: 24px;
-    height: 24px;
-    right: -10px;
-    top: -12px;
-    cursor: pointer;
+.newForm > img {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  right: -10px;
+  top: -12px;
+  cursor: pointer;
 }

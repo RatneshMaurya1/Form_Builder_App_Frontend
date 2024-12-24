@@ -7,18 +7,22 @@ import deleteImage from "../../assets/delete.png";
 import FolderPopup from "../../components/FolderPopup/FolderPopup";
 import FormPopup from "../../components/FormPopup/FormPopup";
 import SharePopup from "../../components/SharePopup/SharePopup";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { createFolder, deleteFolders, getFolders } from "../../Services";
 import toast from "react-hot-toast";
-
+import FolderDeletePopup from "../../components/FolderDeletePopup/FolderDeletePopup";
 const Dashboard = () => {
   const { toggle } = useAuth();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
   const [sharePopup, setSharePopup] = useState(false);
   const [getAllFolder, setGetAllFolder] = useState([]);
+  const [deleteFolderPopup, setDeleteFolderPopup] = useState(false);
+  const [isFolderId, setIsFolderId] = useState(null);
+  const [currentFolder, setCurrentFolder] = useState(null);
   const name = localStorage.getItem("name");
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const getFolderData = async () => {
     try {
@@ -29,15 +33,15 @@ const Dashboard = () => {
     }
   };
 
-  const handleSave = async(name) => {
+  const handleSave = async (name) => {
     try {
-      const response = await createFolder(name,id)
-      if(response.message === "Folder created successfully"){
-        toast.success(response.message)
-        getFolderData()
+      const response = await createFolder(name, id);
+      if (response.message === "Folder created successfully") {
+        toast.success(response.message);
+        getFolderData();
       }
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
     setIsPopupOpen(false);
   };
@@ -51,24 +55,21 @@ const Dashboard = () => {
     setSharePopup(false);
   };
 
-  const handleFolderDelete = async(folderId) => {
-    try {
-      const response = await deleteFolders(folderId)
-      if(response.message === "Folders deleted successfully"){
-        toast.success(response.message)
-        getFolderData()
-      }
-    } catch (error) {
-      toast.error(error.message)
-    }
-  } 
+  const handleFolderDelete = async (folderId) => {
+    setDeleteFolderPopup(true);
+    setIsFolderId(folderId);
+  };
 
   useEffect(() => {
     getFolderData();
-  }, []);
+  }, [id]);
+
+  const navigateFolder = (folderId) => {
+    setCurrentFolder(folderId);
+  };
   return (
     <>
-      <div className={styles.container}>
+      <div className={`${styles.container} ${toggle ? "" : styles.light}`}>
         <div className={`${styles.navBar} ${toggle ? "" : styles.navLight}`}>
           <div>
             <select
@@ -89,11 +90,11 @@ const Dashboard = () => {
             </select>
           </div>
           <div className={styles.theme}>
-            <p>Light</p>
+            <p className={toggle ? "" : styles.light}>Light</p>
             <div>
               <Toggle />
             </div>
-            <p>Dark</p>
+            <p className={toggle ? "" : styles.light}>Dark</p>
           </div>
           <button onClick={() => setSharePopup(true)}>Share</button>
         </div>
@@ -107,18 +108,47 @@ const Dashboard = () => {
               src={folderImage}
               alt="folder-image"
             />
-            <p onClick={() => setIsPopupOpen(true)}>Create a folder</p>
+            <p
+              className={toggle ? "" : styles.light}
+              onClick={() => setIsPopupOpen(true)}
+            >
+              Create a folder
+            </p>
           </div>
-          {getAllFolder.length === 0 ? (
-            ""
-          ) : (
-            getAllFolder.map((folder) => (
-              <div key={folder._id} className={`${styles.folders} ${toggle ? "" : styles.light}`}>
-              <p>{folder.name}</p>
-              <img src={deleteImage} onClick={() => handleFolderDelete(folder._id)} alt="delete-inage" />
-            </div>
-            ))
-          )}
+          {getAllFolder.length === 0
+            ? ""
+            : getAllFolder.map((folder) => (
+                <div
+                  key={folder._id}
+                  className={`${styles.folders} ${
+                    currentFolder === folder._id
+                      ? toggle
+                        ? styles.current
+                        : styles.currentLight
+                      : ""
+                  } ${toggle ? "" : styles.light}`}
+                >
+                  <p
+                    className={`${styles.folderText} ${
+                      currentFolder === folder._id
+                        ? toggle
+                          ? styles.currentText
+                          : styles.currentTextLight
+                        : toggle
+                        ? styles.defaultText
+                        : styles.lightText
+                    }`}
+                    onClick={() => navigateFolder(folder._id)}
+                  >
+                    {folder.name}
+                  </p>
+                  <img
+                    src={deleteImage}
+                    onClick={() => handleFolderDelete(folder._id)}
+                    alt="delete-image"
+                  />
+                </div>
+              ))}
         </div>
 
         <div className={styles.form}>
@@ -146,6 +176,12 @@ const Dashboard = () => {
           isOpen={sharePopup}
           onClose={() => setSharePopup(false)}
           onSave={handleShareSave}
+        />
+        <FolderDeletePopup
+          isOpen={deleteFolderPopup}
+          onClose={() => setDeleteFolderPopup(false)}
+          isFolderId={isFolderId}
+          getFolderData={getFolderData}
         />
       </div>
     </>

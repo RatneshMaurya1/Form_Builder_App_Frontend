@@ -101,3 +101,45 @@ export const deleteFolders = async (folderId) => {
     throw new Error(error.message || "An unexpected error occurred");
   }
 };
+
+
+export const getForms = async (userId) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/form/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `${localStorage.getItem("token")}`,
+      },
+    });
+    if (response.ok) {
+      return response.json();
+    } else {
+      const errorResponse = await response.json();
+      throw new Error(errorResponse.message || "Something went wrong");
+    }
+  } catch (error) {
+    throw new Error(error.message || "An unexpected error occurred");
+  }
+};
+
+export const createForm = async (name,userId) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/folder/${userId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({name}),
+    });
+    if (response.ok) {
+      return response.json();
+    } else {
+      const errorResponse = await response.json();
+      throw new Error(errorResponse.message || "Something went wrong");
+    }
+  } catch (error) {
+    throw new Error(error.message || "An unexpected error occurred");
+  }
+};
