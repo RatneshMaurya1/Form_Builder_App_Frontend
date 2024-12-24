@@ -8,7 +8,7 @@ import FolderPopup from "../../components/FolderPopup/FolderPopup";
 import FormPopup from "../../components/FormPopup/FormPopup";
 import SharePopup from "../../components/SharePopup/SharePopup";
 import { useNavigate, useParams } from "react-router-dom";
-import { createFolder, deleteFolders, getFolders } from "../../Services";
+import { createFolder, createForm, deleteFolders, getFolders, getForms } from "../../Services";
 import toast from "react-hot-toast";
 import FolderDeletePopup from "../../components/FolderDeletePopup/FolderDeletePopup";
 const Dashboard = () => {
@@ -20,6 +20,8 @@ const Dashboard = () => {
   const [deleteFolderPopup, setDeleteFolderPopup] = useState(false);
   const [isFolderId, setIsFolderId] = useState(null);
   const [currentFolder, setCurrentFolder] = useState(null);
+  const [forms,setForms] = useState([])
+  const [formsById,setFormsById] = useState([])
   const name = localStorage.getItem("name");
   const { id } = useParams();
   const navigate = useNavigate();
@@ -46,8 +48,16 @@ const Dashboard = () => {
     setIsPopupOpen(false);
   };
 
-  const handleFormSave = (name) => {
-    console.log("Form Name:", name);
+  const handleFormSave = async(name) => {
+    try {
+      const response = await createForm(name,currentFolder, id);
+      if (response.message === "Form created successfully") {
+        toast.success(response.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+    getFolderData();
     setOpenPopup(false);
   };
   const handleShareSave = (name) => {
@@ -58,11 +68,39 @@ const Dashboard = () => {
   const handleFolderDelete = async (folderId) => {
     setDeleteFolderPopup(true);
     setIsFolderId(folderId);
+    getFolderData()
   };
 
   useEffect(() => {
     getFolderData();
-  }, [id]);
+  }, [openPopup,isPopupOpen]);
+
+  useEffect(() => {
+    const getCreatedFormById = async () => {
+      try {
+        const response = await getForms(currentFolder, id);
+        setFormsById(response.forms)
+      } catch (error) {
+        toast.error(error.message || "An error occurred");
+      }
+    };
+
+    if (currentFolder) {
+      getCreatedFormById();
+    }
+  }, [currentFolder, id,openPopup,isPopupOpen,deleteFolderPopup]);
+  useEffect(() => {
+    const getCreatedForm = async () => {
+      try {
+        const response = await getForms(null,id);
+        setForms(response.forms)
+      } catch (error) {
+        toast.error(error.message || "An error occurred");
+      }
+    };
+
+    getCreatedForm();
+  }, [openPopup,isPopupOpen,deleteFolderPopup])
 
   const navigateFolder = (folderId) => {
     setCurrentFolder(folderId);
@@ -151,17 +189,42 @@ const Dashboard = () => {
               ))}
         </div>
 
-        <div className={styles.form}>
-          <div className={styles.createForm}>
-            <button onClick={() => setOpenPopup(true)}>+</button>
-            <p>Create a typebot</p>
-          </div>
+        {currentFolder ? (
+          <div className={styles.form}>
+            <div className={styles.createForm}>
+              <button onClick={() => setOpenPopup(true)}>+</button>
+              <p>Create a typebot</p>
+            </div>
 
-          <div className={`${styles.newForm} ${toggle ? "" : styles.newLight}`}>
-            <p className={`${toggle ? "" : styles.light}`}>New form</p>
-            <img src={deleteImage} alt="delete-inage" />
+         {formsById?.map((formById) => (
+             <div
+             key={formById._id}
+             className={`${styles.newForm} ${toggle ? "" : styles.newLight}`}
+           >
+             <p className={`${toggle ? "" : styles.light}`}>{formById.name}</p>
+             <img src={deleteImage} alt="delete-inage" />
+           </div>
+         ))}
           </div>
-        </div>
+        ) : (
+          <div className={styles.form}>
+            <div className={styles.createForm}>
+              <button onClick={() => setOpenPopup(true)}>+</button>
+              <p>Create a typebot</p>
+            </div>
+
+        {forms?.map((form) => (
+              <div
+              key={form._id}
+              className={`${styles.newForm} ${toggle ? "" : styles.newLight}`}
+            >
+              <p className={`${toggle ? "" : styles.light}`}>{form.name}</p>
+              <img src={deleteImage} alt="delete-inage" />
+            </div>
+        ))}
+          </div>
+        )}
+
         <FolderPopup
           isOpen={isPopupOpen}
           onClose={() => setIsPopupOpen(false)}

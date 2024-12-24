@@ -103,15 +103,17 @@ export const deleteFolders = async (folderId) => {
 };
 
 
-export const getForms = async (userId) => {
+export const getForms = async (folderId, userId) => {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/form/${userId}`, {
+    const folderQuery = folderId ? `?folderId=${folderId}` : "";
+    const response = await fetch(`${BACKEND_URL}/api/form/${userId}${folderQuery}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `${localStorage.getItem("token")}`,
+        "Authorization": localStorage.getItem("token"),
       },
     });
+
     if (response.ok) {
       return response.json();
     } else {
@@ -123,15 +125,16 @@ export const getForms = async (userId) => {
   }
 };
 
-export const createForm = async (name,userId) => {
+
+export const createForm = async (name,folderId,userId) => {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/folder/${userId}`, {
+    const response = await fetch(`${BACKEND_URL}/api/form/${userId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify({name}),
+      body: JSON.stringify({name,folderId}),
     });
     if (response.ok) {
       return response.json();
