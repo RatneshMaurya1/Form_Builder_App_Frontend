@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from "react";
-import styles from "./dashboard.module.css";
+import React, { useEffect, useState } from "react";
+import styles from "./sharedashboard.module.css";
 import Toggle from "../../components/Toggle/Toggle";
 import { useAuth } from "../../components/Context/AuthContext";
 import folderImage from "../../assets/folderImg.png";
@@ -11,204 +11,115 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   createFolder,
   createForm,
-  createWorkspace,
-  createWorkspaceForm,
-  deleteFolders,
-  deleteForm,
-  deleteItemsFromWorkspace,
   getFolders,
   getForms,
-  getSharedWorkspace,
-  shareWorkspace,
 } from "../../Services";
 import toast from "react-hot-toast";
 import FolderDeletePopup from "../../components/FolderDeletePopup/FolderDeletePopup";
 import FormDelete from "../../components/FormDeletePopup/FormDelete";
 
-const Dashboard = () => {
+
+const shareDashboard = () => {
   const { toggle } = useAuth();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
   const [sharePopup, setSharePopup] = useState(false);
   const [getAllFolder, setGetAllFolder] = useState([]);
   const [deleteFolderPopup, setDeleteFolderPopup] = useState(false);
+  const [isFolderId, setIsFolderId] = useState(null);
   const [currentFolder, setCurrentFolder] = useState(null);
   const [forms, setForms] = useState([]);
   const [formsById, setFormsById] = useState([]);
-  const [deleteFormPopup, setDeleteFormPopup] = useState(false);
-  const [isFolderId, setIsFolderId] = useState(null);
-  const [isFormId, setIsFormId] = useState(null);
-  const [isDeletingForm, setIsDeletingForm] = useState(false);
-  const [workspace,setWorkspace] = useState([])
+  const name = localStorage.getItem("name");
   const { id } = useParams();
+  const [deleteFormPopup, setDeleteFormPopup] = useState(false);
+  const [isFormId, setIsFormId] = useState(null);
   const navigate = useNavigate();
 
-  const fetchFolders = useCallback(async () => {
+  const getFolderData = async () => {
     try {
       const response = await getFolders(id);
       setGetAllFolder(response.folders);
     } catch (error) {
-      toast.error(error.message || "Error fetching folders");
+      console.error(error);
     }
-  }, [id]);
+  };
 
-  const fetchFormsByFolder = useCallback(async () => {
-    if (currentFolder && !isDeletingForm) {
-      try {
-        const response = await getForms(currentFolder, id);
-        setFormsById(response.forms);
-        const formIds = response?.forms?.map((form) => form._id);
-        await createWorkspaceForm(id, formIds);
-      } catch (error) {
-        toast.error(error.message || "Error fetching forms");
-      }
-    }
-  }, [currentFolder, id, isDeletingForm]);
-
-  const fetchAllForms = useCallback(async () => {
-    try {
-      const response = await getForms(null, id);
-      setForms(response.forms);
-      if (!isDeletingForm) {
-        const formIds = response?.forms?.map((form) => form._id);
-        await createWorkspaceForm(id, formIds);
-      }
-    } catch (error) {
-      toast.error(error.message || "Error fetching forms");
-    }
-  }, [id, isDeletingForm]);
   const handleSave = async (name) => {
     try {
       const response = await createFolder(name, id);
       if (response.message === "Folder created successfully") {
         toast.success(response.message);
-        await fetchFolders();
+        getFolderData();
       }
     } catch (error) {
-      toast.error(error.message || "Error creating folder");
-    } finally {
-      setIsPopupOpen(false);
+      toast.error(error.message);
     }
+    setIsPopupOpen(false);
   };
+
   const handleFormSave = async (name) => {
     try {
       const response = await createForm(name, currentFolder, id);
       if (response.message === "Form created successfully") {
         toast.success(response.message);
-        await fetchFormsByFolder();
-        await fetchAllForms();
       }
     } catch (error) {
-      toast.error(error.message || "Error creating form");
-    } finally {
-      setOpenPopup(false);
+      toast.error(error.message);
     }
+    getFolderData();
+    setOpenPopup(false);
+  };
+  const handleShareSave = (name) => {
+    console.log("Email:", name);
+    setSharePopup(false);
   };
 
-  const onSavehandleFolderDelete = async () => {
-    try {
-      const response = await deleteFolders(isFolderId);
-      if (response.message === "Folders deleted successfully") {
-        toast.success(response.message);
-        await fetchFolders();
-        await deleteItemsFromWorkspace(id, isFolderId);
-
-        if (currentFolder === isFolderId) {
-          setCurrentFolder(null);
-        }
-      }
-    } catch (error) {
-      toast.error(error.message || "Error deleting folder");
-    } finally {
-      setDeleteFolderPopup(false);
-    }
-  };
   const handleFolderDelete = async (folderId) => {
     setDeleteFolderPopup(true);
     setIsFolderId(folderId);
+    getFolderData();
   };
-  const handleFormDelete = async (formId) => {
+
+  const handleFormDelete = (formId) => {
     setDeleteFormPopup(true);
     setIsFormId(formId);
   };
-  const onSavehandleFormDelete = async () => {
-    try {
-      setIsDeletingForm(true);
-      const response = await deleteForm(id, isFormId);
-      if (response.message === "Form deleted successfully") {
-        toast.success(response.message);
-        await fetchFormsByFolder();
-        await fetchAllForms();
-        await deleteItemsFromWorkspace(id, isFormId);
+
+  useEffect(() => {
+    getFolderData();
+  }, [openPopup, isPopupOpen]);
+
+  useEffect(() => {
+    const getCreatedFormById = async () => {
+      try {
+        const response = await getForms(currentFolder, id);
+        setFormsById(response.forms);
+      } catch (error) {
+        toast.error(error.message || "An error occurred");
       }
-    } catch (error) {
-      toast.error(error.message || "Error deleting form");
-    } finally {
-      setDeleteFormPopup(false);
-      setIsDeletingForm(false);
+    };
+
+    if (currentFolder) {
+      getCreatedFormById();
     }
-  };
-
+  }, [currentFolder, id, openPopup, isPopupOpen, deleteFolderPopup,deleteFormPopup]);
   useEffect(() => {
-    fetchFolders();
-    fetchAllForms();
-  }, [fetchFolders, fetchAllForms]);
+    const getCreatedForm = async () => {
+      try {
+        const response = await getForms(null, id);
+        setForms(response.forms);
+      } catch (error) {
+        toast.error(error.message || "An error occurred");
+      }
+    };
 
-  useEffect(() => {
-    fetchFormsByFolder();
-  }, [fetchFormsByFolder]);
+    getCreatedForm();
+  }, [openPopup, isPopupOpen, deleteFolderPopup,deleteFormPopup]);
 
   const navigateFolder = (folderId) => {
-    setCurrentFolder((prev) => (prev === folderId ? null : folderId));
+    setCurrentFolder(folderId);
   };
-
-  const handleSelectValue = (e) => {
-    const selectedValue = e.target.value;
-    if (selectedValue === "Setting") {
-      console.log("setting clicked");
-    }
-  };
-
-  const handleShareSave = async(email,value) => {
-    try {
-      const response = await shareWorkspace(id,email,value);
-      if (response.success === true) {
-    toast.success("dashboard added successfully")
-      }
-    } catch (error) {
-      toast.error(error.message || "Error creating form");
-    } finally {
-      setSharePopup(false);
-    }
-  };
-  useEffect(() => {
-    const folderForWorkspace = async() => {
-      try {
-        const response = await getFolders(id);
-        const folderIds = response?.folders?.map((folder) => folder._id);
-        await createWorkspace(id, folderIds);
-      }catch (error) {
-        toast.error(error.message || "Error creating form");
-      }
-    }
- folderForWorkspace()
-  },[])
-
-  useEffect(() => {
-    const SharedWorkspaces = async() => {
-      try {
-      const response = await getSharedWorkspace(id)
-      if(response.message === "Workspaces fetched successfully."){
-        setWorkspace(response.workspaces)
-      }
-      }catch (error) {
-        toast.error(error.message || "Error creating form");
-      }
-    }
- SharedWorkspaces()
-  },[])
-
-  const name = localStorage.getItem("name");
   return (
     <>
       <div className={`${styles.container} ${toggle ? "" : styles.light}`}>
@@ -219,26 +130,15 @@ const Dashboard = () => {
               className={`${styles.customSelect} ${
                 toggle ? styles.dark : styles.light
               }`}
-              onChange={handleSelectValue}
             >
-              <option className={toggle ? "" : styles.optionLight} value={name}>
+              <option className={toggle ? "" : styles.optionLight} value="1">
                 {name}'s workspace
               </option>
-              {workspace?.length > 0 && workspace.map((userWorkspace) => (
-                <option value={userWorkspace.name}>{userWorkspace.name}'s workspace</option>
-              ))}
-              <option
-                onClick={() => console.log("setting clicked")}
-                className={toggle ? "" : styles.optionLight}
-                value="Setting"
-              >
-                Settings
+              <option className={toggle ? "" : styles.optionLight} value="2">
+                Option 2
               </option>
-              <option
-                className={toggle ? "" : styles.optionLight}
-                value="Log Out"
-              >
-                Log Out
+              <option className={toggle ? "" : styles.optionLight} value="3">
+                Option 3
               </option>
             </select>
           </div>
@@ -263,16 +163,14 @@ const Dashboard = () => {
             />
             <p
               className={toggle ? "" : styles.light}
-              onClick={() => {
-                setIsPopupOpen(true);
-              }}
+              onClick={() => setIsPopupOpen(true)}
             >
               Create a folder
             </p>
           </div>
-          {getAllFolder?.length === 0
+          {getAllFolder.length === 0
             ? ""
-            : getAllFolder?.map((folder) => (
+            : getAllFolder.map((folder) => (
                 <div
                   key={folder._id}
                   className={`${styles.folders} ${
@@ -371,19 +269,17 @@ const Dashboard = () => {
           isOpen={deleteFolderPopup}
           onClose={() => setDeleteFolderPopup(false)}
           isFolderId={isFolderId}
-          getFolderData={fetchFolders}
-          onSave={onSavehandleFolderDelete}
+          getFolderData={getFolderData}
         />
         <FormDelete
           isOpen={deleteFormPopup}
           onClose={() => setDeleteFormPopup(false)}
           isFormId={isFormId}
           id={id}
-          onSave={onSavehandleFormDelete}
         />
       </div>
     </>
   );
 };
 
-export default Dashboard;
+export default shareDashboard;

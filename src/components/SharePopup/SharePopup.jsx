@@ -4,7 +4,11 @@ import { useAuth } from "../Context/AuthContext";
 
 const SharePopup = ({ isOpen, onClose, onSave }) => {
       const [folderName, setFolderName] = useState("");
+      const [value,setValue] = useState("")
       const {toggle} = useAuth()
+      const handleSelectEditViewValue = (e) => {
+        setValue(e.target.value)
+      }
 
       if (!isOpen) return null;
   return (
@@ -12,9 +16,10 @@ const SharePopup = ({ isOpen, onClose, onSave }) => {
       <div className={`${styles.popupContainer} ${toggle ? "" : styles.light}`} onClick={(e) => e.stopPropagation()}>
         <div className={styles.invite}>
         <h2 className={`${styles.popupTitle} ${toggle ? "" : styles.light}`}>Invite by Email</h2>
-        <select className={`${toggle ? "" : styles.light}`}>
-            <option className={`${toggle ? "" : styles.light}`} value="1">Edit</option>
-            <option className={`${toggle ? "" : styles.light}`} value="2">View</option>
+        <select className={`${toggle ? "" : styles.light}`} onChange={handleSelectEditViewValue}>
+          <option value="">Select</option>
+            <option className={`${toggle ? "" : styles.light}`} value="edit">Edit</option>
+            <option className={`${toggle ? "" : styles.light}`} value="view">View</option>
         </select>
         </div>
         <input
@@ -28,7 +33,7 @@ const SharePopup = ({ isOpen, onClose, onSave }) => {
           <button
             className={styles.popupButton}
             onClick={() => {
-              onSave(folderName);
+              onSave(folderName,value);
               setFolderName("");
             }}
           >
