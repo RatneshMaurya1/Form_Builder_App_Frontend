@@ -9,7 +9,7 @@ import ProtectedRoute from "./utils/ProtectRoute";
 import { useAuth } from "./components/Context/AuthContext";
 import { Navigate } from "react-router-dom";
 import ShareDashboard from "./Pages/ShareDashboard/ShareDashboard";
-import Test from "./Pages/test";
+import AddByLink from "./Pages/AddByLink";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -38,7 +38,7 @@ function App() {
             }
           />
           <Route path="/share/workspace/:id" element={<ProtectedRoute><ShareDashboard/></ProtectedRoute>}/>
-          <Route path="/share/dashboard/:id" element={<Test/>}/>
+          <Route path="/share/dashboard/:id" element={<AddByLink/>}/>
         </Routes>
       </BrowserRouter>
       <Toaster />
