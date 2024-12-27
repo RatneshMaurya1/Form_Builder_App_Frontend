@@ -45,7 +45,7 @@ export const createFolder = async (name, userId) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem("token")}`,
+        "Authorization": `${localStorage.getItem("token")}`,
       },
       body: JSON.stringify({ name }),
     });
@@ -66,7 +66,7 @@ export const getFolders = async (userId) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem("token")}`,
+        "Authorization": `${localStorage.getItem("token")}`,
       },
     });
     if (response.ok) {
@@ -86,7 +86,7 @@ export const deleteFolders = async (folderId) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem("token")}`,
+        "Authorization": `${localStorage.getItem("token")}`,
       },
     });
     if (response.ok) {
@@ -109,7 +109,7 @@ export const getForms = async (folderId, userId) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token"),
+          "Authorization": localStorage.getItem("token"),
         },
       }
     );
@@ -131,7 +131,7 @@ export const createForm = async (name, folderId, userId) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem("token")}`,
+        "Authorization": `${localStorage.getItem("token")}`,
       },
       body: JSON.stringify({ name, folderId }),
     });
@@ -154,7 +154,7 @@ export const deleteForm = async (userId, formId) => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${localStorage.getItem("token")}`,
+          "Authorization": `${localStorage.getItem("token")}`,
         },
       }
     );
@@ -175,7 +175,7 @@ export const createWorkspace = async (userId, folderId) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem("token")}`,
+        "Authorization": `${localStorage.getItem("token")}`,
       },
       body: JSON.stringify({ owner: userId, folders: folderId }),
     });
@@ -195,7 +195,7 @@ export const createWorkspaceForm = async (userId, formId) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem("token")}`,
+        "Authorization": `${localStorage.getItem("token")}`,
       },
       body: JSON.stringify({ owner: userId, forms: formId }),
     });
@@ -218,7 +218,7 @@ export const deleteItemsFromWorkspace = async (userId, itemId) => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${localStorage.getItem("token")}`,
+          "Authorization": `${localStorage.getItem("token")}`,
         },
       }
     );
@@ -239,7 +239,7 @@ export const shareWorkspace = async (userId, email, value) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `${localStorage.getItem("token")}`,
+        "Authorization": `${localStorage.getItem("token")}`,
       },
       body: JSON.stringify({
         owner: userId,
@@ -268,7 +268,49 @@ export const getSharedWorkspace = async (userId) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: localStorage.getItem("token"),
+        "Authorization": localStorage.getItem("token"),
+      },
+    });
+
+    if (response.ok) {
+      return response.json();
+    } else {
+      const errorResponse = await response.json();
+      throw new Error(errorResponse.message || "Something went wrong");
+    }
+  } catch (error) {
+    throw new Error(error.message || "An unexpected error occurred");
+  }
+};
+
+export const addSharedWorkspace = async (workspaceId,mode) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/share/workspace/${workspaceId}?mode=${mode}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token"),
+      },
+    });
+
+    if (response.ok) {
+      return response.json();
+    } else {
+      const errorResponse = await response.json();
+      throw new Error(errorResponse.message || "Something went wrong");
+    }
+  } catch (error) {
+    throw new Error(error.message || "An unexpected error occurred");
+  }
+};
+
+export const addSharedWorkspaceByLink = async (mode) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/share/dashboard/${mode}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token"),
       },
     });
 

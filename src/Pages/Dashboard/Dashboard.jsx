@@ -40,6 +40,7 @@ const Dashboard = () => {
   const [isFormId, setIsFormId] = useState(null);
   const [isDeletingForm, setIsDeletingForm] = useState(false);
   const [workspace,setWorkspace] = useState([])
+  const [view,setView] = useState(false)
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -162,18 +163,12 @@ const Dashboard = () => {
     setCurrentFolder((prev) => (prev === folderId ? null : folderId));
   };
 
-  const handleSelectValue = (e) => {
-    const selectedValue = e.target.value;
-    if (selectedValue === "Setting") {
-      console.log("setting clicked");
-    }
-  };
 
   const handleShareSave = async(email,value) => {
     try {
       const response = await shareWorkspace(id,email,value);
       if (response.success === true) {
-    toast.success("dashboard added successfully")
+    toast.success("dashboard added or updated with permission successfully")
       }
     } catch (error) {
       toast.error(error.message || "Error creating form");
@@ -209,6 +204,54 @@ const Dashboard = () => {
   },[])
 
   const name = localStorage.getItem("name");
+  
+  const handleSelectValue = (e) => {
+    const selectedValue = e.target.value;
+    setView(false)
+  console.log(selectedValue)
+    if (selectedValue === "Setting") {
+      console.log("setting clicked");
+    }
+  
+    if (selectedValue === name) {
+      navigate(`/dashboard/${localStorage.getItem("userId")}`);
+    }
+  
+    const selectedWorkspace = workspace?.find((work) => work.name === selectedValue);
+    if (selectedWorkspace) {
+      const permissionValue = selectedWorkspace.sharedWith.find(
+        (user) => user.user._id === localStorage.getItem("userId") 
+      )?.permission;
+  
+      console.log("Permission Value:", permissionValue);
+  
+      if (permissionValue === "view") {
+        setView(true)
+      navigate(`/dashboard/${selectedWorkspace.owner}`);
+
+      } else if (permissionValue === "edit") {
+        console.log("User has edit permission");
+      navigate(`/dashboard/${selectedWorkspace.owner}`);
+
+      }
+  
+    }
+  };
+  
+  const handlefolderPopup = () => {
+    if(view){
+      return toast.error("You do not have access.")
+    }
+    setIsPopupOpen(true);
+  }
+  
+  const handleCreateTypeBot = () => {
+    if(view){
+      return toast.error("You do not have access.")
+    }
+    setOpenPopup(true)
+  }
+
   return (
     <>
       <div className={`${styles.container} ${toggle ? "" : styles.light}`}>
@@ -225,16 +268,16 @@ const Dashboard = () => {
                 {name}'s workspace
               </option>
               {workspace?.length > 0 && workspace.map((userWorkspace) => (
-                <option value={userWorkspace.name}>{userWorkspace.name}'s workspace</option>
+                <option className={toggle ? "" : styles.optionLight} key={userWorkspace._id} value={userWorkspace.name}>{userWorkspace.name}'s workspace</option>
               ))}
               <option
-                onClick={() => console.log("setting clicked")}
                 className={toggle ? "" : styles.optionLight}
                 value="Setting"
               >
                 Settings
               </option>
               <option
+              style={{color:"#FFA54C"}}
                 className={toggle ? "" : styles.optionLight}
                 value="Log Out"
               >
@@ -256,16 +299,14 @@ const Dashboard = () => {
             className={`${styles.createFolder} ${toggle ? "" : styles.light}`}
           >
             <img
-              onClick={() => setIsPopupOpen(true)}
+              onClick={handlefolderPopup}
               className={toggle ? "" : styles.folderImgLight}
               src={folderImage}
               alt="folder-image"
             />
             <p
               className={toggle ? "" : styles.light}
-              onClick={() => {
-                setIsPopupOpen(true);
-              }}
+              onClick={handlefolderPopup}
             >
               Create a folder
             </p>
@@ -309,7 +350,7 @@ const Dashboard = () => {
         {currentFolder ? (
           <div className={styles.form}>
             <div className={styles.createForm}>
-              <button onClick={() => setOpenPopup(true)}>+</button>
+              <button onClick={handleCreateTypeBot}>+</button>
               <p>Create a typebot</p>
             </div>
 
@@ -332,7 +373,7 @@ const Dashboard = () => {
         ) : (
           <div className={styles.form}>
             <div className={styles.createForm}>
-              <button onClick={() => setOpenPopup(true)}>+</button>
+              <button onClick={handleCreateTypeBot}>+</button>
               <p>Create a typebot</p>
             </div>
 
@@ -365,6 +406,7 @@ const Dashboard = () => {
         <SharePopup
           isOpen={sharePopup}
           onClose={() => setSharePopup(false)}
+          id={id}
           onSave={handleShareSave}
         />
         <FolderDeletePopup

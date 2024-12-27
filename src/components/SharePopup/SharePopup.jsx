@@ -1,13 +1,39 @@
 import React, { useState } from "react";
 import styles from "./sharepopup.module.css";
 import { useAuth } from "../Context/AuthContext";
+import toast from "react-hot-toast";
+import { addSharedWorkspaceByLink } from "../../Services";
 
 const SharePopup = ({ isOpen, onClose, onSave }) => {
       const [folderName, setFolderName] = useState("");
+      const [loading,setLoading] = useState(false)
       const [value,setValue] = useState("")
       const {toggle} = useAuth()
       const handleSelectEditViewValue = (e) => {
         setValue(e.target.value)
+      }
+
+      const handleShareDashboard = async() => {
+        if(!value){
+         return toast.error("Please Use 'edit' or 'view' mode.")
+        }
+        setLoading(true)
+        try {
+          const response = await addSharedWorkspaceByLink(value)
+          if(response.message === "Shareable link created"){
+            navigator.clipboard
+            .writeText(response.shareableLink)
+            .then(() => {
+              toast.success("Link copied to clipboard!");
+            })
+          }
+
+        } catch (error) {
+          toast.error(error.message)
+        }finally{
+          setLoading(false)
+          onClose()
+        }
       }
 
       if (!isOpen) return null;
@@ -44,9 +70,10 @@ const SharePopup = ({ isOpen, onClose, onSave }) => {
             <p className={toggle ? "" : styles.light}>Invite by link</p>
           <button 
             className={`${styles.popupButtonCancel} ${toggle ? "" : styles.light}`}
-            // onClick={onClose}
+            onClick={handleShareDashboard}
+            disabled={loading}
           >
-            Copy link
+            {loading ? "Loading..." : "Copy link"}
           </button>
           </div>
       </div>
