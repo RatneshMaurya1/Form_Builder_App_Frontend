@@ -10,6 +10,8 @@ import { useAuth } from "./components/Context/AuthContext";
 import { Navigate } from "react-router-dom";
 import ShareDashboard from "./Pages/ShareDashboard/ShareDashboard";
 import AddByLink from "./Pages/AddByLink";
+import Setting from "./Pages/Setting/Setting";
+import CreateForm from "./Pages/CreateForm/CreateForm";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -38,7 +40,9 @@ function App() {
             }
           />
           <Route path="/share/workspace/:id" element={<ProtectedRoute><ShareDashboard/></ProtectedRoute>}/>
-          <Route path="/share/dashboard/:id" element={<AddByLink/>}/>
+          <Route path="/share/dashboard/:id" element={<ProtectedRoute><AddByLink/></ProtectedRoute>}/>
+          <Route path="/setting/:id" element={<ProtectedRoute><Setting/></ProtectedRoute>} />
+          <Route path="/create/form/:id" element={<ProtectedRoute><CreateForm/></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
       <Toaster />

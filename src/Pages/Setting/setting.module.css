@@ -1,0 +1,109 @@
+.Settingcontainer {
+  height: 100vh;
+  width: 100%;
+  background: #1f1f23;
+  padding-top: 30px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.Settingcontainer > p {
+  text-align: center;
+  color: #ffffff;
+  font-family: Open Sans;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 29.96px;
+}
+.settingForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+  margin-top: 80px;
+  height: 493px;
+  width: 500px;
+  position: relative;
+}
+.settingForm > input {
+  padding-left: 50px;
+  width: 493px;
+  height: 55px;
+  border-radius: 12px;
+  font-family: "Open Sans";
+  font-size: 19.29px;
+  font-weight: 500;
+  line-height: 26.28px;
+  color: #828282;
+  border: 1.38px solid #d0d0d0;
+  background: none;
+}
+.submitBtn {
+  width: 493px;
+  height: 55.13px;
+  border-radius: 55.13px;
+  border: none;
+  outline: none;
+  background: #1a5fff;
+  cursor: pointer;
+}
+.logout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  position: absolute;
+  bottom: 40px;
+  left: 70px;
+}
+.logout > img {
+  height: 19px;
+  width: 19px;
+}
+.logout > p {
+  font-family: "Poppins";
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  text-align: left;
+  color: #cf3636;
+}
+.profile {
+  position: absolute;
+  left: 19px;
+  top: 12px;
+}
+.lockEmail {
+  position: absolute;
+  left: 12px;
+  top: 90px;
+}
+.hideTextEmail {
+  position: absolute;
+  right: 12px;
+  top: 90px;
+  cursor: pointer;
+}
+.lockOld {
+  position: absolute;
+  left: 12px;
+  top: 170px;
+}
+.hideTextOld {
+  position: absolute;
+  right: 12px;
+  top: 170px;
+  cursor: pointer;
+}
+.lockNew{
+  position: absolute;
+  left: 12px;
+  top: 250px;
+}
+.hideTextNew{
+  position: absolute;
+  right: 12px;
+  top: 250px;
+  cursor: pointer;
+}

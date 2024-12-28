@@ -208,9 +208,8 @@ const Dashboard = () => {
   const handleSelectValue = (e) => {
     const selectedValue = e.target.value;
     setView(false)
-  console.log(selectedValue)
     if (selectedValue === "Setting") {
-      console.log("setting clicked");
+      navigate(`/setting/${localStorage.getItem("userId")}`)
     }
   
     if (selectedValue === name) {
@@ -250,6 +249,14 @@ const Dashboard = () => {
       return toast.error("You do not have access.")
     }
     setOpenPopup(true)
+  }
+
+  const handleNavigateForm = (getFormId) =>{
+    const isValidUser = localStorage.getItem("userId") === id
+    if(!isValidUser){
+      return toast.error("You can not go to someone else workspace.")
+    }
+    navigate(`/create/form/${getFormId}`)
   }
 
   return (
@@ -359,7 +366,7 @@ const Dashboard = () => {
                 key={formById._id}
                 className={`${styles.newForm} ${toggle ? "" : styles.newLight}`}
               >
-                <p className={`${toggle ? "" : styles.light}`}>
+                <p onClick={() => handleNavigateForm(formById._id)} className={`${toggle ? "" : styles.light}`}>
                   {formById.name}
                 </p>
                 <img
@@ -382,7 +389,7 @@ const Dashboard = () => {
                 key={form._id}
                 className={`${styles.newForm} ${toggle ? "" : styles.newLight}`}
               >
-                <p className={`${toggle ? "" : styles.light}`}>{form.name}</p>
+                <p onClick={() => handleNavigateForm(form._id)} className={`${toggle ? "" : styles.light}`}>{form.name}</p>
                 <img
                   src={deleteImage}
                   onClick={() => handleFormDelete(form._id)}
