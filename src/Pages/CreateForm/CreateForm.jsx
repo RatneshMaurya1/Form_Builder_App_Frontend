@@ -4,9 +4,14 @@ import Toggle from "../../components/Toggle/Toggle";
 import { useAuth } from "../../components/Context/AuthContext";
 import closeImage from "../../assets/close.png";
 import deleteImage from "../../assets/delete.png"
+import toast from "react-hot-toast";
+import { useParams } from "react-router-dom";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const CreateForm = () => {
   const { toggle } = useAuth();
   const [additem,setAddItem] = useState([])
+  const {id} = useParams() 
 
   const handleAddItem = (item) => {
     const itemId = Date.now()
@@ -15,7 +20,61 @@ const CreateForm = () => {
   const handleRemoveItem = (itemId) =>{
     setAddItem((prev) => prev.filter((item => item.itemId !== itemId)))
   } 
-  console.log(additem)
+let formName = "test Create form"
+const formData = {
+  formId: id,
+  name: formName,
+  elements: additem.map((item) => ({
+    bubble: item.item === "bubbleText" || item.item === "bubbleImage" ? item.item : undefined, // Correct bubble check
+    inputType: [
+      "inputText", 
+      "inputNumber", 
+      "inputEmail", 
+      "inputPhone", 
+      "inputDate", 
+      "inputRating", 
+      "inputButton"
+    ].includes(item.item) ? item.item : undefined,  // Correct inputType check
+    content: "Placeholder content",  // Placeholder for dynamic content
+    id: item.itemId.toString(),
+  })),
+};
+
+
+  const handleSaveForm = async () => {
+    if (!formName.trim() || additem.length === 0) {
+      toast.error("Form name and at least one element are required.");
+      return;
+    }
+  
+    const isValid = additem.every((item) => item.itemId && item.item);
+    if (!isValid) {
+      toast.error("All elements must have valid data.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/create/forms`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        toast.success("Form saved successfully!");
+        console.log(data);
+      } else {
+        toast.error(data.message || "Something went wrong");
+      }
+    } catch (error) {
+      toast.error("Error saving form:", error);
+    }
+  };
+  
+    
   return (
     <>
       <div
@@ -47,7 +106,7 @@ const CreateForm = () => {
             </div>
             <div className={styles.saveShareButton}>
               <button className={styles.shareButton}>Share</button>
-              <button className={styles.saveButton}>Save</button>
+              <button onClick={handleSaveForm} className={styles.saveButton}>Save</button>
               <img src={closeImage} alt="close-image" />
             </div>
           </div>
