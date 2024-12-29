@@ -12,6 +12,9 @@ const CreateForm = () => {
     const itemId = Date.now()
     setAddItem([...additem,{itemId,item}])
   }
+  const handleRemoveItem = (itemId) =>{
+    setAddItem((prev) => prev.filter((item => item.itemId !== itemId)))
+  } 
   console.log(additem)
   return (
     <>
@@ -160,22 +163,87 @@ const CreateForm = () => {
             {additem.map((allItem) => (
               <div key={allItem.itemId} className={styles.items}>
                 {allItem.item === "bubbleText" && 
-                <div className={styles.createdBubbleText}>
-                  <p>Text</p>
-                  <input type="text" placeholder="Click here to edit"/>
+                <div className={`${styles.createdBubbleText} ${toggle ? "" : styles.light}`}>
+                  <p className={toggle ? "" : styles.light}>Bubble Text</p>
+                  <input className={toggle ? "" : styles.light} type="text" required placeholder="Click here to edit"/>
                   <img src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735390333/Vector_1_h4nxdq.png" alt="bubble-image" />
-                  <div className={styles.deleteButton}>
-                    <img src={deleteImage} alt="delete-image" />
+                  <div className={`${styles.deleteButton} ${toggle ? "" : styles.light}`}>
+                    <img onClick={() => handleRemoveItem(allItem.itemId)} src={deleteImage} alt="delete-image" />
                   </div>
                 </div>
                 }
                 {allItem.item === "bubbleImage" && 
-                <div className={styles.createdBubbleText}>
-                  <p>Image</p>
-                  <input type="text" placeholder="Click here to edit"/>
-                  <img src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735390333/Vector_1_h4nxdq.png" alt="bubble-image" />
-                  <div className={styles.deleteButton}>
-                    <img src={deleteImage} alt="delete-image" />
+                <div className={`${styles.createdBubbleText} ${toggle ? "" : styles.light}`}>
+                  <p className={toggle ? "" : styles.light}>Bubble Image</p>
+                  <input className={toggle ? "" : styles.light} type="text" required placeholder="Click here to edit"/>
+                  <img src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735390332/SVG_mzm9a0.png" alt="bubble-image" />
+                  <div className={`${styles.deleteButton} ${toggle ? "" : styles.light}`}>
+                    <img onClick={() => handleRemoveItem(allItem.itemId)} src={deleteImage} alt="delete-image" />
+                  </div>
+                </div>
+                }
+                {allItem.item === "inputText" && 
+                <div className={`${styles.createdBubbleText} ${toggle ? "" : styles.light}`}>
+                  <p className={toggle ? "" : styles.light}>Input Text</p>
+                  <input className={toggle ? "" : styles.light} type="text" required placeholder="Click here to edit"/>
+                  <img src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735390331/SVG_2_boz0wo.png" alt="bubble-image" />
+                  <div className={`${styles.deleteButton} ${toggle ? "" : styles.light}`}>
+                    <img onClick={() => handleRemoveItem(allItem.itemId)} src={deleteImage} alt="delete-image" />
+                  </div>
+                </div>
+                }
+                {allItem.item === "inputNumber" && 
+                <div className={`${styles.createdBubbleText} ${toggle ? "" : styles.light}`}>
+                  <p className={toggle ? "" : styles.light}>Input Number</p>
+                  <input className={toggle ? "" : styles.light} type="text" required placeholder="Click here to edit"/>
+                  <img src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735390329/SVG_3_rq2imb.png" alt="bubble-image" />
+                  <div className={`${styles.deleteButton} ${toggle ? "" : styles.light}`}>
+                    <img onClick={() => handleRemoveItem(allItem.itemId)} src={deleteImage} alt="delete-image" />
+                  </div>
+                </div>
+                }
+                {allItem.item === "inputEmail" && 
+                <div className={`${styles.createdInput} ${toggle ? "" : styles.light}`}>
+                  <p className={toggle ? "" : styles.light}>Input Email</p>
+                  <h3>Hint : User will input a email on his form</h3>
+                  <div className={`${styles.deleteButton} ${toggle ? "" : styles.light}`}>
+                    <img onClick={() => handleRemoveItem(allItem.itemId)} src={deleteImage} alt="delete-image" />
+                  </div>
+                </div>
+                }
+                {allItem.item === "inputPhone" && 
+                <div className={`${styles.createdInput} ${toggle ? "" : styles.light}`}>
+                  <p className={toggle ? "" : styles.light}>Input Phone</p>
+                  <h3>Hint : User will input a phone on his form</h3>
+                  <div className={`${styles.deleteButton} ${toggle ? "" : styles.light}`}>
+                    <img onClick={() => handleRemoveItem(allItem.itemId)} src={deleteImage} alt="delete-image" />
+                  </div>
+                </div>
+                }
+                {allItem.item === "inputDate" && 
+                <div className={`${styles.createdInput} ${toggle ? "" : styles.light}`}>
+                  <p className={toggle ? "" : styles.light}>Input Date</p>
+                  <h3>Hint : User will select a date</h3>
+                  <div className={`${styles.deleteButton} ${toggle ? "" : styles.light}`}>
+                    <img onClick={() => handleRemoveItem(allItem.itemId)} src={deleteImage} alt="delete-image" />
+                  </div>
+                </div>
+                }
+                {allItem.item === "inputRating" && 
+                <div className={`${styles.createdInput} ${toggle ? "" : styles.light}`}>
+                  <p className={toggle ? "" : styles.light}>Input Rating</p>
+                  <h3>Hint : User will tap to rate out of 5</h3>
+                  <div className={`${styles.deleteButton} ${toggle ? "" : styles.light}`}>
+                    <img onClick={() => handleRemoveItem(allItem.itemId)} src={deleteImage} alt="delete-image" />
+                  </div>
+                </div>
+                }
+                {allItem.item === "inputButton" && 
+                <div className={`${styles.createdInput} ${toggle ? "" : styles.light}`}>
+                  <p className={toggle ? "" : styles.light}>Input Button</p>
+                  <h3>Hint : User will submit the form when he clicks the button</h3>
+                  <div className={`${styles.deleteButton} ${toggle ? "" : styles.light}`}>
+                    <img onClick={() => handleRemoveItem(allItem.itemId)} src={deleteImage} alt="delete-image" />
                   </div>
                 </div>
                 }

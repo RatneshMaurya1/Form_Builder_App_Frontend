@@ -271,12 +271,29 @@ nav.light {
   flex-direction: column;
   position: relative;
   padding-left: 17px;
-  gap: 15px;
+  gap: 13px;
+}
+.createdBubbleText.light{
+  background: none;
+  border: 1px solid #D6D6D6;
 }
 .createdBubbleText > p {
   color: #ffffff;
   font-family: "Open Sans";
   font-size: 20px;
+  font-weight: 600;
+  line-height: 21px;
+  text-align: left;
+}
+.createdBubbleText > p.light{
+  color: #000;
+}
+.createdBubbleText > h3 {
+  position: absolute;
+  bottom: 0;
+  font-family: "Open Sans";
+  color: #555555;
+  font-size: 12px;
   font-weight: 600;
   line-height: 21px;
   text-align: left;
@@ -294,6 +311,10 @@ nav.light {
   font-weight: 600;
   line-height: 21px;
   text-align: left;
+}
+.createdBubbleText > input.light{
+  background: none;
+  border: 1px solid #D6D6D6;
 }
 .createdBubbleText > img {
   position: absolute;
@@ -314,8 +335,47 @@ nav.light {
   top: -10px;
   right: -10px;
 }
+.deleteButton.light{
+  background: #ffffff;
+  border: 1px solid #D6D6D6;
+}
 .deleteButton > img {
   height: 25px;
   width: 25px;
   cursor: pointer;
+}
+.createdInput {
+  width: 315px;
+  height: 119px;
+  border-radius: 8px;
+  background: #18181b;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  padding-left: 17px;
+  gap: 15px;
+}
+.createdInput.light{
+  background: #ffffff;
+  border: 1px solid #D6D6D6;
+}
+.createdInput > p {
+  color: #ffffff;
+  font-family: "Open Sans";
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 21px;
+  text-align: left;
+}
+.createdInput > p.light{
+  color: #000;
+}
+.createdInput > h3 {
+  font-family: "Open Sans";
+  color: #555555;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 21px;
+  text-align: left;
 }

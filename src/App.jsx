@@ -6,7 +6,7 @@ import Login from "./Pages/Login/Login";
 import { Toaster } from "react-hot-toast";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import ProtectedRoute from "./utils/ProtectRoute";
-import { useAuth } from "./components/Context/AuthContext";
+import { AuthProvider, useAuth } from "./components/Context/AuthContext";
 import { Navigate } from "react-router-dom";
 import ShareDashboard from "./Pages/ShareDashboard/ShareDashboard";
 import AddByLink from "./Pages/AddByLink";
@@ -25,6 +25,7 @@ function App() {
 
   return (
     <>
+    <AuthProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<DefaultRoute/>} />
@@ -46,8 +47,10 @@ function App() {
         </Routes>
       </BrowserRouter>
       <Toaster />
+      </AuthProvider>
     </>
   );
 }
 
 export default App;
+
