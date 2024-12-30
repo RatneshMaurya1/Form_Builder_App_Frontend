@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 import { getFillForm } from "../../Services";
-import styles from "./FillForm.module.css";
+import styles from "./fillform.module.css";
 
 const FillForm = () => {
   const { id } = useParams();
