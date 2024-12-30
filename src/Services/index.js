@@ -388,3 +388,24 @@ export const getFillFormLink = async (formId) => {
     throw new Error(error.message || "An unexpected error occurred");
   }
 };
+
+export const getFillForm = async (createFormId) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/fill/forms/${createFormId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token"),
+      },
+    });
+
+    if (response.ok) {
+      return response.json();
+    } else {
+      const errorResponse = await response.json();
+      throw new Error(errorResponse.message || "Something went wrong");
+    }
+  } catch (error) {
+    throw new Error(error.message || "An unexpected error occurred");
+  }
+};

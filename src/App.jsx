@@ -12,6 +12,7 @@ import ShareDashboard from "./Pages/ShareDashboard/ShareDashboard";
 import AddByLink from "./Pages/AddByLink";
 import Setting from "./Pages/Setting/Setting";
 import CreateForm from "./Pages/CreateForm/CreateForm";
+import FillForm from "./Pages/FillForm/FillForm";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -44,6 +45,7 @@ function App() {
           <Route path="/share/dashboard/:id" element={<ProtectedRoute><AddByLink/></ProtectedRoute>}/>
           <Route path="/setting/:id" element={<ProtectedRoute><Setting/></ProtectedRoute>} />
           <Route path="/create/form/:id" element={<ProtectedRoute><CreateForm/></ProtectedRoute>} />
+          <Route path="/fill/form/:id" element={<FillForm/>} />
         </Routes>
       </BrowserRouter>
       <Toaster />

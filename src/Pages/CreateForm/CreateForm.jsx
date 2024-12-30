@@ -135,7 +135,6 @@ const CreateForm = () => {
       setFormLinkLoading(false)
     }
   }
-  console.log(fillFormData)
   return (
     <>
       <div
@@ -168,7 +167,7 @@ const CreateForm = () => {
             </div>
             <div className={styles.saveShareButton}>
               
-              {fillFormData ? <button onClick={handleGenerateFillFormLink} className={styles.shareButton1}>{formLinkLoading ? "Loading..." : "Share"}</button> : <button className={styles.shareButton2}>Share</button>}
+              {fillFormData ? <button onClick={() => handleGenerateFillFormLink()} className={styles.shareButton1}>{formLinkLoading ? "Loading..." : "Share"}</button> : <button className={styles.shareButton2}>Share</button>}
               
               <button onClick={handleSaveForm} className={styles.saveButton}>
                 Save
