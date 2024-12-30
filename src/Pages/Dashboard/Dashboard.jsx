@@ -251,11 +251,12 @@ const Dashboard = () => {
     setOpenPopup(true)
   }
 
-  const handleNavigateForm = (getFormId) =>{
+  const handleNavigateForm = (getFormId,formname) =>{
     const isValidUser = localStorage.getItem("userId") === id
     if(!isValidUser){
       return toast.error("You can not go to someone else workspace.")
     }
+    localStorage.setItem("formName",formname)
     navigate(`/create/form/${getFormId}`)
   }
 
@@ -366,7 +367,7 @@ const Dashboard = () => {
                 key={formById._id}
                 className={`${styles.newForm} ${toggle ? "" : styles.newLight}`}
               >
-                <p onClick={() => handleNavigateForm(formById._id)} className={`${toggle ? "" : styles.light}`}>
+                <p onClick={() => handleNavigateForm(formById._id,formById.name)} className={`${toggle ? "" : styles.light}`}>
                   {formById.name}
                 </p>
                 <img
@@ -389,7 +390,7 @@ const Dashboard = () => {
                 key={form._id}
                 className={`${styles.newForm} ${toggle ? "" : styles.newLight}`}
               >
-                <p onClick={() => handleNavigateForm(form._id)} className={`${toggle ? "" : styles.light}`}>{form.name}</p>
+                <p onClick={() => handleNavigateForm(form._id,form.name)} className={`${toggle ? "" : styles.light}`}>{form.name}</p>
                 <img
                   src={deleteImage}
                   onClick={() => handleFormDelete(form._id)}
