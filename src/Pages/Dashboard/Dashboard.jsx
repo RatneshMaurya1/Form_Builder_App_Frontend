@@ -222,14 +222,12 @@ const Dashboard = () => {
         (user) => user.user._id === localStorage.getItem("userId") 
       )?.permission;
   
-      console.log("Permission Value:", permissionValue);
   
       if (permissionValue === "view") {
         setView(true)
       navigate(`/dashboard/${selectedWorkspace.owner}`);
 
       } else if (permissionValue === "edit") {
-        console.log("User has edit permission");
       navigate(`/dashboard/${selectedWorkspace.owner}`);
 
       }

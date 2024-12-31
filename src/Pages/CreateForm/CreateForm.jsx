@@ -68,6 +68,9 @@ const CreateForm = () => {
       toast.error("Form name and at least one element are required.");
       return;
     }
+    if(!additem.find((e) => e.item === "inputButton")){
+      return toast.error("A form should have a submit button.")
+    }
 
     const hasEmptyContent = additem.some(
       (item) => 
