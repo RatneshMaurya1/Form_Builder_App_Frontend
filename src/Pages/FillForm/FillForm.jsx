@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
-import { getFillForm } from "../../Services";
+import { addViewCount, getFillForm } from "../../Services";
 import styles from "./fillform.module.css";
+import { useAuth } from "../../components/Context/AuthContext";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const FillForm = () => {
-  const { id } = useParams();
+  const { formId, id } = useParams();
   const [formElements, setFormElements] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [inputValues, setInputValues] = useState({});
   const [inputData, setInputData] = useState([]);
   const [fillFormId, setFillFormId] = useState(null);
+  const { toggle } = useAuth();
+  console.log(toggle);
+
   useEffect(() => {
     const fetchForm = async () => {
       try {
@@ -36,10 +40,27 @@ const FillForm = () => {
       toast.error("Input cannot be empty!");
       return;
     }
+  
+    if (currentElement.inputType === "inputEmail" && !/\S+@\S+\.\S+/.test(inputValue)) {
+      toast.error("Invalid email format!");
+      return;
+    }
+    if (currentElement.inputType === "inputPhone" && !/^\d{10}$/.test(inputValue)) {
+      toast.error("Invalid phone number! Must be 10 digits.");
+      return;
+    }
+    if (currentElement.inputType === "inputNumber" && isNaN(inputValue)) {
+      toast.error("Please enter a valid number!");
+      return;
+    }
+    if (currentElement.inputType === "inputDate" && !/^\d{4}-\d{2}-\d{2}$/.test(inputValue)) {
+      toast.error("Invalid date format! Use YYYY-MM-DD.");
+      return;
+    }
 
     const filledFormData = !fillFormId
       ? {
-          formId: id,
+          formId: formId,
           responses: formElements.map((element) => ({
             elementId: element.id,
             type: element.inputType || "bubble",
@@ -90,7 +111,7 @@ const FillForm = () => {
 
       setTimeout(() => {
         setCurrentIndex((prevIndex) => prevIndex + 1);
-      }, 500);
+      }, 1000);
     } catch (error) {
       toast.error("Error submitting the form.");
     }
@@ -101,16 +122,19 @@ const FillForm = () => {
       toast.error("Please complete the form first.");
       return;
     }
-  
+
     try {
-      const response = await fetch(`${BACKEND_URL}/api/filled/forms/${fillFormId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ responses: [], completed: true }), // Ensure responses is an array
-      });
-  
+      const response = await fetch(
+        `${BACKEND_URL}/api/filled/forms/${fillFormId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ responses: [], completed: true }), 
+        }
+      );
+
       const data = await response.json();
-  
+
       if (response.ok) {
         toast.success("Form submitted successfully!");
       } else {
@@ -120,8 +144,6 @@ const FillForm = () => {
       toast.error("Error submitting the form.");
     }
   };
-  
-
 
   useEffect(() => {
     if (formElements.length > 0 && currentIndex >= 0) {
@@ -135,6 +157,18 @@ const FillForm = () => {
     }
   }, [currentIndex, formElements]);
 
+  useEffect(() => {
+    const fetchForm = async () => {
+      try {
+        const response = await addViewCount(formId);
+      } catch (error) {
+        toast.error("Error fetching form");
+      }
+    };
+
+    fetchForm();
+  }, []);
+
   return (
     <div className={styles.formContainer}>
       {formElements.slice(0, currentIndex + 1).map((element) => (
@@ -144,6 +178,7 @@ const FillForm = () => {
               {element.bubble === "bubbleText" && (
                 <div className={styles.bubbleText}>
                   <img
+                    className={styles.inputTextImg}
                     src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735556185/image_4_ezfuvk.png"
                     alt="bubble-image"
                   />
@@ -171,13 +206,27 @@ const FillForm = () => {
                   ) : (
                     <>
                       <input
+                        className={
+                          localStorage.getItem("theme") === "dark"
+                            ? styles.dark
+                            : ""
+                        }
                         type="text"
                         placeholder={element.content}
                         value={inputValues[element.id] || ""}
                         onChange={(e) => handleInputChange(e, element.id)}
                       />
-                      <button onClick={() => handleButtonClick(element.id)}>
+
+                      <button
+                        className={
+                          localStorage.getItem("theme") === "dark"
+                            ? styles.dark
+                            : ""
+                        }
+                        onClick={() => handleButtonClick(element.id)}
+                      >
                         <img
+                          className={styles.biuttonImg}
                           src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
                           alt="submit-image"
                         />
@@ -195,12 +244,24 @@ const FillForm = () => {
                   ) : (
                     <>
                       <input
+                        className={
+                          localStorage.getItem("theme") === "dark"
+                            ? styles.dark
+                            : ""
+                        }
                         type="number"
                         placeholder={element.content}
                         value={inputValues[element.id] || ""}
                         onChange={(e) => handleInputChange(e, element.id)}
                       />
-                      <button onClick={() => handleButtonClick(element.id)}>
+                      <button
+                        className={
+                          localStorage.getItem("theme") === "dark"
+                            ? styles.dark
+                            : ""
+                        }
+                        onClick={() => handleButtonClick(element.id)}
+                      >
                         <img
                           src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
                           alt="submit-image"
@@ -219,12 +280,24 @@ const FillForm = () => {
                   ) : (
                     <>
                       <input
+                        className={
+                          localStorage.getItem("theme") === "dark"
+                            ? styles.dark
+                            : ""
+                        }
                         type="email"
                         placeholder="enter your email"
                         value={inputValues[element.id] || ""}
                         onChange={(e) => handleInputChange(e, element.id)}
                       />
-                      <button onClick={() => handleButtonClick(element.id)}>
+                      <button
+                        className={
+                          localStorage.getItem("theme") === "dark"
+                            ? styles.dark
+                            : ""
+                        }
+                        onClick={() => handleButtonClick(element.id)}
+                      >
                         <img
                           src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
                           alt="submit-image"
@@ -243,12 +316,24 @@ const FillForm = () => {
                   ) : (
                     <>
                       <input
+                        className={
+                          localStorage.getItem("theme") === "dark"
+                            ? styles.dark
+                            : ""
+                        }
                         type="tel"
                         placeholder="enter you phone number"
                         value={inputValues[element.id] || ""}
                         onChange={(e) => handleInputChange(e, element.id)}
                       />
-                      <button onClick={() => handleButtonClick(element.id)}>
+                      <button
+                        className={
+                          localStorage.getItem("theme") === "dark"
+                            ? styles.dark
+                            : ""
+                        }
+                        onClick={() => handleButtonClick(element.id)}
+                      >
                         <img
                           src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
                           alt="submit-image"
@@ -267,12 +352,24 @@ const FillForm = () => {
                   ) : (
                     <>
                       <input
+                        className={
+                          localStorage.getItem("theme") === "dark"
+                            ? styles.dark
+                            : ""
+                        }
                         type="date"
                         placeholder={element.content}
                         value={inputValues[element.id] || ""}
                         onChange={(e) => handleInputChange(e, element.id)}
                       />
-                      <button onClick={() => handleButtonClick(element.id)}>
+                      <button
+                        className={
+                          localStorage.getItem("theme") === "dark"
+                            ? styles.dark
+                            : ""
+                        }
+                        onClick={() => handleButtonClick(element.id)}
+                      >
                         <img
                           src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
                           alt="submit-image"
@@ -283,14 +380,18 @@ const FillForm = () => {
                 </div>
               )}
               {element.inputType === "inputRating" && (
-                <div className={styles.ratingContainerWrapper}>
+                <div
+                  className={styles.ratingContainerWrapper}
+                >
                   {inputData.some((data) => data.id === element.id) ? (
                     <p className={styles.filledValue}>
                       {inputData.find((data) => data.id === element.id).value}
                     </p>
                   ) : (
                     <>
-                      <div className={styles.ratingContainer}>
+                      <div className={`${styles.ratingContainer} ${
+                    localStorage.getItem("theme") === "dark" ? styles.dark : ""
+                  }`}>
                         {[1, 2, 3, 4, 5].map((rating) => (
                           <button
                             key={rating}
@@ -311,7 +412,11 @@ const FillForm = () => {
                         ))}
                       </div>
 
-                      <button onClick={() => handleButtonClick(element.id)}>
+                      <button  className={
+                          localStorage.getItem("theme") === "dark"
+                            ? styles.dark
+                            : ""
+                        } onClick={() => handleButtonClick(element.id)}>
                         <img
                           src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
                           alt="submit-image"

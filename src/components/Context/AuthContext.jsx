@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const AuthContext = createContext()
 
 export const AuthProvider = ({children}) => {
-  const [toggle,setIsToggle] = useState(true)
+  const [toggle,setIsToggle] = useState(false)
     const [isLoggedIn,setIsLoggedIn] = useState(false)
 
     const logIn = () => setIsLoggedIn(true)

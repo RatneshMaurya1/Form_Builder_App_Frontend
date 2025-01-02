@@ -5,7 +5,7 @@ import { useAuth } from "../../components/Context/AuthContext";
 import closeImage from "../../assets/close.png";
 import deleteImage from "../../assets/delete.png";
 import toast from "react-hot-toast";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getFillFormLink, getWorkspaceForm } from "../../Services";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -15,6 +15,8 @@ const CreateForm = () => {
   const [fillFormData,setFillFormData] = useState(null)
   const [formLinkLoading,setFormLinkLoading] = useState(false)
   const { id } = useParams();
+  const navigate = useNavigate()
+  console.log(toggle)
 
   const handleAddItem = (item) => {
     if(fillFormData){
@@ -64,6 +66,9 @@ const CreateForm = () => {
 }
 
   const handleSaveForm = async () => {
+    if(fillFormData){
+      return toast.error("The form has been created with fields. You can now share it.")
+    }
     if (!formName.trim() || additem.length === 0) {
       toast.error("Form name and at least one element are required.");
       return;
@@ -138,6 +143,7 @@ const CreateForm = () => {
       setFormLinkLoading(false)
     }
   }
+  const userId = localStorage.getItem("userId")
   return (
     <>
       <div
@@ -158,7 +164,7 @@ const CreateForm = () => {
             <div className={styles.flow}>
               <p>Flow</p>
             </div>
-            <p className={toggle ? "" : styles.light}>Response</p>
+            <p onClick={() => navigate(`/response/${id}`)} className={toggle ? "" : styles.light}>Response</p>
           </div>
           <div className={styles.saveAndShare}>
             <div className={styles.lightAndDark}>
@@ -175,7 +181,7 @@ const CreateForm = () => {
               <button onClick={handleSaveForm} className={styles.saveButton}>
                 Save
               </button>
-              <img src={closeImage} alt="close-image" />
+              <img onClick={() => navigate(`/dashboard/${userId}`)} src={closeImage} alt="close-image" />
             </div>
           </div>
         </nav>
