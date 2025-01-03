@@ -26,7 +26,7 @@ import FolderDeletePopup from "../../components/FolderDeletePopup/FolderDeletePo
 import FormDelete from "../../components/FormDeletePopup/FormDelete";
 
 const Dashboard = () => {
-  const { toggle } = useAuth();
+  const { toggle,logOut } = useAuth();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
   const [sharePopup, setSharePopup] = useState(false);
@@ -39,10 +39,11 @@ const Dashboard = () => {
   const [isFolderId, setIsFolderId] = useState(null);
   const [isFormId, setIsFormId] = useState(null);
   const [isDeletingForm, setIsDeletingForm] = useState(false);
-  const [workspace,setWorkspace] = useState([])
-  const [view,setView] = useState(false)
+  const [workspace, setWorkspace] = useState([]);
+  const [view, setView] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
+  const defaultDashboard = localStorage.getItem("userId");
 
   const fetchFolders = useCallback(async () => {
     try {
@@ -125,10 +126,16 @@ const Dashboard = () => {
     }
   };
   const handleFolderDelete = async (folderId) => {
+    if (view) {
+      return toast.error("You do not have permission");
+    }
     setDeleteFolderPopup(true);
     setIsFolderId(folderId);
   };
   const handleFormDelete = async (formId) => {
+    if (view) {
+      return toast.error("You do not have permission");
+    }
     setDeleteFormPopup(true);
     setIsFormId(formId);
   };
@@ -153,22 +160,30 @@ const Dashboard = () => {
   useEffect(() => {
     fetchFolders();
     fetchAllForms();
-  }, [fetchFolders, fetchAllForms]);
+  }, [fetchFolders, fetchAllForms,workspace]);
 
   useEffect(() => {
     fetchFormsByFolder();
-  }, [fetchFormsByFolder]);
+  }, [fetchFormsByFolder,workspace]);
 
   const navigateFolder = (folderId) => {
     setCurrentFolder((prev) => (prev === folderId ? null : folderId));
   };
 
+  const handleSharePopup = () => {
+    if (id !== localStorage.getItem("userId")) {
+      return toast.error("You can not share someone else dashboard");
+    }
+    setSharePopup(true);
+  };
 
-  const handleShareSave = async(email,value) => {
+  const handleShareSave = async (email, value) => {
     try {
-      const response = await shareWorkspace(id,email,value);
+      const response = await shareWorkspace(id, email, value);
       if (response.success === true) {
-    toast.success("dashboard added or updated with permission successfully")
+        toast.success(
+          "dashboard added or updated with permission successfully"
+        );
       }
     } catch (error) {
       toast.error(error.message || "Error creating form");
@@ -177,86 +192,94 @@ const Dashboard = () => {
     }
   };
   useEffect(() => {
-    const folderForWorkspace = async() => {
+    const folderForWorkspace = async () => {
       try {
         const response = await getFolders(id);
         const folderIds = response?.folders?.map((folder) => folder._id);
         await createWorkspace(id, folderIds);
-      }catch (error) {
+      } catch (error) {
         toast.error(error.message || "Error creating form");
       }
-    }
- folderForWorkspace()
-  },[])
+    };
+    folderForWorkspace();
+  }, []);
 
   useEffect(() => {
-    const SharedWorkspaces = async() => {
+    const SharedWorkspaces = async () => {
       try {
-      const response = await getSharedWorkspace(id)
-      if(response.message === "Workspaces fetched successfully."){
-        setWorkspace(response.workspaces)
-      }
-      }catch (error) {
+        const response = await getSharedWorkspace(defaultDashboard);
+        if (response.message === "Workspaces fetched successfully.") {
+          setWorkspace(response.workspaces);
+        }
+      } catch (error) {
         toast.error(error.message || "Error creating form");
       }
-    }
- SharedWorkspaces()
-  },[])
+    };
+    SharedWorkspaces();
+  }, [defaultDashboard]);
+  useEffect(() => {
+    navigate(`/dashboard/${defaultDashboard}`);
+  }, [defaultDashboard]);
 
   const name = localStorage.getItem("name");
-  
+
   const handleSelectValue = (e) => {
     const selectedValue = e.target.value;
-    setView(false)
+    setView(false);
     if (selectedValue === "Setting") {
-      navigate(`/setting/${localStorage.getItem("userId")}`)
+      return navigate(`/setting/${localStorage.getItem("userId")}`);
     }
-  
+
+    if (selectedValue === "Log Out") {
+      localStorage.removeItem("token");
+      logOut();
+      navigate("/")
+      toast.success("You have been logged out successfully.")
+    }
+
     if (selectedValue === name) {
-      navigate(`/dashboard/${localStorage.getItem("userId")}`);
+      return navigate(`/dashboard/}${defaultDashboard}`);
     }
-  
-    const selectedWorkspace = workspace?.find((work) => work.name === selectedValue);
+
+    const selectedWorkspace = workspace?.find(
+      (work) => work.name === selectedValue
+    );
     if (selectedWorkspace) {
       const permissionValue = selectedWorkspace.sharedWith.find(
-        (user) => user.user._id === localStorage.getItem("userId") 
+        (user) => user.user._id === localStorage.getItem("userId")
       )?.permission;
-  
-  
+
       if (permissionValue === "view") {
-        setView(true)
-      navigate(`/dashboard/${selectedWorkspace.owner}`);
-
+        setView(true);
+        return navigate(`/dashboard/${selectedWorkspace.owner}`);
       } else if (permissionValue === "edit") {
-      navigate(`/dashboard/${selectedWorkspace.owner}`);
-
+        return navigate(`/dashboard/${selectedWorkspace.owner}`);
       }
-  
     }
   };
-  
+
   const handlefolderPopup = () => {
-    if(view){
-      return toast.error("You do not have access.")
+    if (view) {
+      return toast.error("You do not have access.");
     }
     setIsPopupOpen(true);
-  }
-  
-  const handleCreateTypeBot = () => {
-    if(view){
-      return toast.error("You do not have access.")
-    }
-    setOpenPopup(true)
-  }
+  };
 
-  const handleNavigateForm = (getFormId,formname) =>{
-    const isValidUser = localStorage.getItem("userId") === id
-    if(!isValidUser){
-      return toast.error("You can not go to someone else workspace.")
+  const handleCreateTypeBot = () => {
+    if (view) {
+      return toast.error("You do not have access.");
     }
-    localStorage.setItem("formName",formname)
-    navigate(`/create/form/${getFormId}`)
-  }
+    setOpenPopup(true);
+  };
+
+  const handleNavigateForm = (getFormId, formname) => {
+    const isValidUser = localStorage.getItem("userId") === id;
+    if (!isValidUser) {
+      return toast.error("You can not go to someone else workspace.");
+    }
+    localStorage.setItem("formName", formname);
+    navigate(`/create/form/${getFormId}`);
+  };
 
   return (
     <>
@@ -273,9 +296,16 @@ const Dashboard = () => {
               <option className={toggle ? "" : styles.optionLight} value={name}>
                 {name}'s workspace
               </option>
-              {workspace?.length > 0 && workspace.map((userWorkspace) => (
-                <option className={toggle ? "" : styles.optionLight} key={userWorkspace._id} value={userWorkspace.name}>{userWorkspace.name}'s workspace</option>
-              ))}
+              {workspace?.length > 0 &&
+                workspace.map((userWorkspace) => (
+                  <option
+                    className={toggle ? "" : styles.optionLight}
+                    key={userWorkspace._id}
+                    value={userWorkspace.name}
+                  >
+                    {userWorkspace.name}'s workspace
+                  </option>
+                ))}
               <option
                 className={toggle ? "" : styles.optionLight}
                 value="Setting"
@@ -283,7 +313,7 @@ const Dashboard = () => {
                 Settings
               </option>
               <option
-              style={{color:"#FFA54C"}}
+                style={{ color: "#FFA54C" }}
                 className={toggle ? "" : styles.optionLight}
                 value="Log Out"
               >
@@ -298,7 +328,7 @@ const Dashboard = () => {
             </div>
             <p className={toggle ? "" : styles.light}>Dark</p>
           </div>
-          <button onClick={() => setSharePopup(true)}>Share</button>
+          <button onClick={handleSharePopup}>Share</button>
         </div>
         <div className={styles.allFolders}>
           <div
@@ -365,7 +395,12 @@ const Dashboard = () => {
                 key={formById._id}
                 className={`${styles.newForm} ${toggle ? "" : styles.newLight}`}
               >
-                <p onClick={() => handleNavigateForm(formById._id,formById.name)} className={`${toggle ? "" : styles.light}`}>
+                <p
+                  onClick={() =>
+                    handleNavigateForm(formById._id, formById.name)
+                  }
+                  className={`${toggle ? "" : styles.light}`}
+                >
                   {formById.name}
                 </p>
                 <img
@@ -388,7 +423,12 @@ const Dashboard = () => {
                 key={form._id}
                 className={`${styles.newForm} ${toggle ? "" : styles.newLight}`}
               >
-                <p onClick={() => handleNavigateForm(form._id,form.name)} className={`${toggle ? "" : styles.light}`}>{form.name}</p>
+                <p
+                  onClick={() => handleNavigateForm(form._id, form.name)}
+                  className={`${toggle ? "" : styles.light}`}
+                >
+                  {form.name}
+                </p>
                 <img
                   src={deleteImage}
                   onClick={() => handleFormDelete(form._id)}

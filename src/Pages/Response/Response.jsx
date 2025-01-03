@@ -93,12 +93,17 @@ const Response = () => {
   console.log(completionPercentage);
 
   const chartData = [
-    { title: "Completed", value: completionPercentage, color: "#3B82F6",border:"1px solid #ffffff" },
+    {
+      title: "Completed",
+      value: completionPercentage,
+      color: "#3B82F6",
+      border: "1px solid #ffffff",
+    },
     {
       title: "Non-Completed",
       value: nonCompletionPercentage,
       color: "#909090",
-      border: '4px solid red' 
+      border: "4px solid red",
     },
   ];
 
@@ -170,7 +175,11 @@ const Response = () => {
         {filledFormData.length > 0 ? (
           <>
             <div className={styles.tableContainer}>
-              <table className={`${styles.responseTable} ${toggle ? "" : styles.light}`}>
+              <table
+                className={`${styles.responseTable} ${
+                  toggle ? "" : styles.light
+                }`}
+              >
                 <thead>
                   <tr>
                     <th className={toggle ? "" : styles.light}></th>
@@ -196,7 +205,9 @@ const Response = () => {
                 <tbody>
                   {filledFormData.map((form, formIndex) => (
                     <tr key={formIndex}>
-                      <td className={toggle ? "" : styles.light}>{formIndex + 1}</td>
+                      <td className={toggle ? "" : styles.light}>
+                        {formIndex + 1}
+                      </td>
                       <td className={toggle ? "" : styles.light}>
                         {form.completed
                           ? new Date(form.updatedAt)
@@ -212,7 +223,10 @@ const Response = () => {
                           : ""}
                       </td>
                       {form.responses.map((response, responseIndex) => (
-                        <td className={toggle ? "" : styles.light} key={responseIndex}>
+                        <td
+                          className={toggle ? "" : styles.light}
+                          key={responseIndex}
+                        >
                           {response.type === "inputButton"
                             ? form.completed
                               ? "True"
@@ -230,18 +244,25 @@ const Response = () => {
             <div className={styles.percentage}>
               <div className={styles.chart}>
                 <PieChart
-                className={styles.pie}
+                  className={styles.pie}
                   data={chartData}
                   lineWidth={30}
                   startAngle={-90}
                   // animate
                   // radius={40}
                 />
-                {/* <p>Completed {parseInt(completionPercentage)}</p> */}
+                <p className={toggle ? "" : styles.light}>Completed</p>
+                <h3 className={toggle ? "" : styles.light}>
+                  {parseInt(completionPercentage)}
+                </h3>
               </div>
-              <div className={`${styles.completion} ${toggle ? "" : styles.light}`}>
+              <div
+                className={`${styles.completion} ${toggle ? "" : styles.light}`}
+              >
                 <p className={toggle ? "" : styles.light}>Completion rate</p>
-                <h3 className={toggle ? "" : styles.light}>{parseInt(completionPercentage)}%</h3>
+                <h3 className={toggle ? "" : styles.light}>
+                  {parseInt(completionPercentage)}%
+                </h3>
               </div>
             </div>
           </>

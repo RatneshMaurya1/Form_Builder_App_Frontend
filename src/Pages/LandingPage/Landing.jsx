@@ -45,19 +45,7 @@ const Landing = () => {
           </div>
         </div>
         <div className={styles.figureImage}>
-          <img src={figureImage} alt="figure-image" />
-          <div className={styles.blurImage1}>
-            <img
-              src="https://res.cloudinary.com/dlmwurg10/image/upload/v1734776381/form%20builder/yhuxfixqyrlpzf5bryw8.png"
-              alt="blur-image"
-            />
-          </div>
-          <div className={styles.blurImage2}>
-            <img
-              src="https://res.cloudinary.com/dlmwurg10/image/upload/v1734776363/form%20builder/vbrrnfusnijqg2l1605v.png"
-              alt="blur-image"
-            />
-          </div>
+          <img src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735887515/Container_vyk9gj.png" alt="figure-image" />
         </div>
 
         <div className={styles.allList}>

@@ -1,5 +1,4 @@
 import {createContext, useContext, useState ,useEffect} from "react";
-import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext()
 
@@ -22,6 +21,8 @@ export const AuthProvider = ({children}) => {
             localStorage.removeItem("name")
             localStorage.removeItem("userId")
             localStorage.removeItem("theme")
+            localStorage.removeItem("dashboardId")
+            localStorage.removeItem("formName")
         }
     }, [logOut]);
 

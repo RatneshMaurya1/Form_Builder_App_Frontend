@@ -316,12 +316,31 @@ nav.light {
   width: 100%;
 }
 .chart > p {
+  position: absolute;
   font-family: "Open Sans";
   color: #ffffff;
   font-size: 20px;
   font-weight: 600;
   line-height: 27.24px;
   text-align: center;
+  top: 0;
+  right: -80px;
+}.chart > p.light{
+  color: #000;
+}
+.chart > h3 {
+  position: absolute;
+  font-family: "Open Sans";
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 27.24px;
+  text-align: center;
+  top: 30px;
+  right: -40px;
+}
+.chart > h3.light{
+  color: #000;
 }
 .completion {
   width: 244px;

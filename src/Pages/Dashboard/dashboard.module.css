@@ -247,3 +247,17 @@ select > option.optionLight {
   top: -12px;
   cursor: pointer;
 }
+
+@media (max-width:1100px) {
+  .theme{
+    right: 200px;
+  }
+}
+@media (max-width:1100px) {
+  .theme{
+    right: 150px;
+  }
+  .navBar > button{
+    right: 30px;
+  }
+}

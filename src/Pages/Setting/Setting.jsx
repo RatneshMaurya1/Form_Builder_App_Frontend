@@ -6,6 +6,8 @@ import lockImage from "../../assets/lock.png";
 import hideTextImage from "../../assets/Group.png";
 import toast from "react-hot-toast";
 import { userUpdateData } from "../../Services";
+import { useAuth } from "../../components/Context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Setting = () => {
   const [isVisibleEmailText, setIsVisibleEmailText] = useState(false);
@@ -13,13 +15,15 @@ const Setting = () => {
     useState(false);
   const [isVisibleNewPasswordText, setIsVisibleNewPasswordText] =
     useState(false);
-    const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     oldPassword: "",
     newPassword: "",
   });
+  const { logOut } = useAuth();
+  const navigate = useNavigate()
 
   const handleHideEmail = () => {
     setIsVisibleEmailText((prev) => !prev);
@@ -31,32 +35,37 @@ const Setting = () => {
     setIsVisibleNewPasswordText((prev) => !prev);
   };
 
-  const handleSubmitForm = async(e) => {
-    e.preventDefault()
-    setLoading(true)
+  const handleSubmitForm = async (e) => {
+    e.preventDefault();
+    setLoading(true);
     try {
       const response = await userUpdateData(formData);
       if (response.message === "Your data updated successfully.") {
         toast.success(response.message);
         setFormData({
-            name:"",
-            email:"",
-            oldPassword:"",
-            newPassword:""
+          name: "",
+          email: "",
+          oldPassword: "",
+          newPassword: "",
         });
-        localStorage.setItem("token",response.token)
-        localStorage.setItem("userId",response.data.id)
-        localStorage.setItem("name",response.data.name)
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("userId", response.data.id);
+        localStorage.setItem("name", response.data.name);
       } else {
         toast.error(response.message);
       }
     } catch (error) {
       toast.error(error.message);
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
-  }
-
+  };
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    logOut();
+    navigate("/")
+    toast.success("You have been logged out successfully. Redirecting to login...")
+  };
   return (
     <div className={styles.Settingcontainer}>
       <p>Settings</p>
@@ -104,7 +113,9 @@ const Setting = () => {
           type={isVisibleNewPasswordText ? "password" : "text"}
           placeholder="New Password"
           value={formData.newPassword}
-          onChange={(e) => setFormData({...formData,newPassword:e.target.value})}
+          onChange={(e) =>
+            setFormData({ ...formData, newPassword: e.target.value })
+          }
         />
         <img className={styles.lockNew} src={lockImage} alt="profile-image" />
         <img
@@ -113,9 +124,11 @@ const Setting = () => {
           src={hideTextImage}
           alt="profile-image"
         />
-        <button disabled={loading} className={styles.submitBtn} type="submit">{loading ? "Loading..." : "Update"}</button>
+        <button disabled={loading} className={styles.submitBtn} type="submit">
+          {loading ? "Loading..." : "Update"}
+        </button>
       </form>
-      <div className={styles.logout}>
+      <div onClick={handleLogout} className={styles.logout}>
         <img src={logoutImage} alt="logout-image" />
         <p>Log out</p>
       </div>
