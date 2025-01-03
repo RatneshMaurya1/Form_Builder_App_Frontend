@@ -37,7 +37,7 @@ const Setting = () => {
 
   const handleSubmitForm = async (e) => {
     e.preventDefault();
-    if (!formData.email.includes("@")) {
+    if (formData.email && !formData.email.includes("@")) {
       toast.error("Please enter a valid email address");
       return;
     }
