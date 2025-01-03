@@ -206,10 +206,8 @@ const Dashboard = () => {
   const handleSelectValue = (e) => {
     const selectedValue = e.target.value;
     if (selectedValue === "Setting") {
-      console.log("setting clicked");
     }
     if (workspace?.some((work) => work.name === selectedValue)) {
-      console.log("clicked");
     }
   };
 

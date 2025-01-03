@@ -90,7 +90,6 @@ const Response = () => {
 
   const completionPercentage = (completedCount / viewCount) * 100;
   const nonCompletionPercentage = 100 - completionPercentage;
-  console.log(completionPercentage);
 
   const chartData = [
     {

@@ -178,6 +178,16 @@ const Dashboard = () => {
   };
 
   const handleShareSave = async (email, value) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return toast.error("Please enter a valid email address.");
+    }
+    
+    const validPermissions = ["edit", "view"];
+    if (!validPermissions.includes(value)) {
+      return toast.error("Invalid permission. Choose 'edit' or 'view'.");
+    }
+    
     try {
       const response = await shareWorkspace(id, email, value);
       if (response.success === true) {

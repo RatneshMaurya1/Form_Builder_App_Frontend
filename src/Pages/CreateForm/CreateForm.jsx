@@ -16,7 +16,6 @@ const CreateForm = () => {
   const [formLinkLoading,setFormLinkLoading] = useState(false)
   const { id } = useParams();
   const navigate = useNavigate()
-  console.log(toggle)
 
   const handleAddItem = (item) => {
     if(fillFormData){

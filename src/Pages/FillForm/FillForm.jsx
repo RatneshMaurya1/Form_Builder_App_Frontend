@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { addViewCount, getFillForm } from "../../Services";
 import styles from "./fillform.module.css";
 import { useAuth } from "../../components/Context/AuthContext";
@@ -13,8 +13,9 @@ const FillForm = () => {
   const [inputValues, setInputValues] = useState({});
   const [inputData, setInputData] = useState([]);
   const [fillFormId, setFillFormId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const { toggle } = useAuth();
-  console.log(toggle);
 
   useEffect(() => {
     const fetchForm = async () => {
@@ -40,12 +41,18 @@ const FillForm = () => {
       toast.error("Input cannot be empty!");
       return;
     }
-  
-    if (currentElement.inputType === "inputEmail" && !/\S+@\S+\.\S+/.test(inputValue)) {
+
+    if (
+      currentElement.inputType === "inputEmail" &&
+      !/\S+@\S+\.\S+/.test(inputValue)
+    ) {
       toast.error("Invalid email format!");
       return;
     }
-    if (currentElement.inputType === "inputPhone" && !/^\d{10}$/.test(inputValue)) {
+    if (
+      currentElement.inputType === "inputPhone" &&
+      !/^\d{10}$/.test(inputValue)
+    ) {
       toast.error("Invalid phone number! Must be 10 digits.");
       return;
     }
@@ -53,7 +60,10 @@ const FillForm = () => {
       toast.error("Please enter a valid number!");
       return;
     }
-    if (currentElement.inputType === "inputDate" && !/^\d{4}-\d{2}-\d{2}$/.test(inputValue)) {
+    if (
+      currentElement.inputType === "inputDate" &&
+      !/^\d{4}-\d{2}-\d{2}$/.test(inputValue)
+    ) {
       toast.error("Invalid date format! Use YYYY-MM-DD.");
       return;
     }
@@ -78,7 +88,7 @@ const FillForm = () => {
             },
           ],
         };
-
+    setLoading(true);
     try {
       const endpoint = !fillFormId
         ? `${BACKEND_URL}/api/filled/forms`
@@ -96,7 +106,7 @@ const FillForm = () => {
       if (response.ok) {
         toast.success(
           !fillFormId
-            ? "Form created successfully!"
+            ? "Form updated successfully!"
             : "Form updated successfully!"
         );
         if (!fillFormId) setFillFormId(data.filledForm._id);
@@ -114,6 +124,8 @@ const FillForm = () => {
       }, 1000);
     } catch (error) {
       toast.error("Error submitting the form.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,14 +134,14 @@ const FillForm = () => {
       toast.error("Please complete the form first.");
       return;
     }
-
+    setLoading(true);
     try {
       const response = await fetch(
         `${BACKEND_URL}/api/filled/forms/${fillFormId}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ responses: [], completed: true }), 
+          body: JSON.stringify({ responses: [], completed: true }),
         }
       );
 
@@ -137,11 +149,14 @@ const FillForm = () => {
 
       if (response.ok) {
         toast.success("Form submitted successfully!");
+        navigate("/");
       } else {
         toast.error(data.message || "Failed to submit the form.");
       }
     } catch (error) {
       toast.error("Error submitting the form.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -224,12 +239,17 @@ const FillForm = () => {
                             : ""
                         }
                         onClick={() => handleButtonClick(element.id)}
+                        disabled={loading}
                       >
-                        <img
-                          className={styles.biuttonImg}
-                          src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
-                          alt="submit-image"
-                        />
+                        {loading ? (
+                          "wait..."
+                        ) : (
+                          <img
+                            className={styles.biuttonImg}
+                            src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
+                            alt="submit-image"
+                          />
+                        )}
                       </button>
                     </>
                   )}
@@ -260,12 +280,18 @@ const FillForm = () => {
                             ? styles.dark
                             : ""
                         }
+                        disabled={true}
                         onClick={() => handleButtonClick(element.id)}
                       >
-                        <img
-                          src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
-                          alt="submit-image"
-                        />
+                        {loading ? (
+                          "wait..."
+                        ) : (
+                          <img
+                            className={styles.biuttonImg}
+                            src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
+                            alt="submit-image"
+                          />
+                        )}
                       </button>
                     </>
                   )}
@@ -297,11 +323,17 @@ const FillForm = () => {
                             : ""
                         }
                         onClick={() => handleButtonClick(element.id)}
+                        disabled={true}
                       >
-                        <img
-                          src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
-                          alt="submit-image"
-                        />
+                        {loading ? (
+                          "wait..."
+                        ) : (
+                          <img
+                            className={styles.biuttonImg}
+                            src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
+                            alt="submit-image"
+                          />
+                        )}
                       </button>
                     </>
                   )}
@@ -333,11 +365,17 @@ const FillForm = () => {
                             : ""
                         }
                         onClick={() => handleButtonClick(element.id)}
+                        disabled={loading}
                       >
-                        <img
-                          src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
-                          alt="submit-image"
-                        />
+                        {loading ? (
+                          "wait..."
+                        ) : (
+                          <img
+                            className={styles.biuttonImg}
+                            src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
+                            alt="submit-image"
+                          />
+                        )}
                       </button>
                     </>
                   )}
@@ -369,29 +407,37 @@ const FillForm = () => {
                             : ""
                         }
                         onClick={() => handleButtonClick(element.id)}
+                        disabled={loading}
                       >
-                        <img
-                          src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
-                          alt="submit-image"
-                        />
+                        {loading ? (
+                          "wait..."
+                        ) : (
+                          <img
+                            className={styles.biuttonImg}
+                            src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
+                            alt="submit-image"
+                          />
+                        )}
                       </button>
                     </>
                   )}
                 </div>
               )}
               {element.inputType === "inputRating" && (
-                <div
-                  className={styles.ratingContainerWrapper}
-                >
+                <div className={styles.ratingContainerWrapper}>
                   {inputData.some((data) => data.id === element.id) ? (
                     <p className={styles.filledValue}>
                       {inputData.find((data) => data.id === element.id).value}
                     </p>
                   ) : (
                     <>
-                      <div className={`${styles.ratingContainer} ${
-                    localStorage.getItem("theme") === "dark" ? styles.dark : ""
-                  }`}>
+                      <div
+                        className={`${styles.ratingContainer} ${
+                          localStorage.getItem("theme") === "dark"
+                            ? styles.dark
+                            : ""
+                        }`}
+                      >
                         {[1, 2, 3, 4, 5].map((rating) => (
                           <button
                             key={rating}
@@ -412,11 +458,14 @@ const FillForm = () => {
                         ))}
                       </div>
 
-                      <button  className={
+                      <button
+                        className={
                           localStorage.getItem("theme") === "dark"
                             ? styles.dark
                             : ""
-                        } onClick={() => handleButtonClick(element.id)}>
+                        }
+                        onClick={() => handleButtonClick(element.id)}
+                      >
                         <img
                           src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735574343/send_k57jod.png"
                           alt="submit-image"
@@ -428,7 +477,9 @@ const FillForm = () => {
               )}
               {element.inputType === "inputButton" && (
                 <div className={styles.submitButton}>
-                  <button onClick={handleSubmit}>Submit</button>
+                  <button disabled={loading} onClick={handleSubmit}>
+                    {loading ? "Loading..." : "Submit"}
+                  </button>
                 </div>
               )}
             </div>

@@ -25,6 +25,7 @@ const SharePopup = ({ isOpen, onClose, onSave }) => {
             .writeText(response.shareableLink)
             .then(() => {
               toast.success("Link copied to clipboard!");
+              setValue("")
             })
           }
 
@@ -35,10 +36,15 @@ const SharePopup = ({ isOpen, onClose, onSave }) => {
           onClose()
         }
       }
+      const handleRemoveVal = () => {
+        setValue("")
+      }
 
       if (!isOpen) return null;
   return (
-    <div className={styles.popupOverlay} onClick={onClose}>
+    <div className={styles.popupOverlay} onClick={() => {onClose();
+      handleRemoveVal()
+    }}>
       <div className={`${styles.popupContainer} ${toggle ? "" : styles.light}`} onClick={(e) => e.stopPropagation()}>
         <div className={styles.invite}>
         <h2 className={`${styles.popupTitle} ${toggle ? "" : styles.light}`}>Invite by Email</h2>
