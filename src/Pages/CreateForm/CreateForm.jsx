@@ -12,14 +12,21 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const CreateForm = () => {
   const { toggle } = useAuth();
   const [additem, setAddItem] = useState([]);
-  const [fillFormData,setFillFormData] = useState(null)
-  const [formLinkLoading,setFormLinkLoading] = useState(false)
+  const [fillFormData, setFillFormData] = useState(null);
+  const [formLinkLoading, setFormLinkLoading] = useState(false);
   const { id } = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleAddItem = (item) => {
-    if(fillFormData){
-      return toast.error("The form has been created with fields. You can now share it.")
+    if (additem.some((e) => e.item === "inputButton")) {
+      return toast.error(
+        "Cannot add new items because a submit button has already been added."
+      );
+    }
+    if (fillFormData) {
+      return toast.error(
+        "The form has been created with fields. You can now share it."
+      );
     }
     const itemId = Date.now();
     setAddItem([...additem, { itemId, item, content: "" }]);
@@ -28,9 +35,10 @@ const CreateForm = () => {
     setAddItem((prev) => prev.filter((item) => item.itemId !== itemId));
   };
   const formNameFromStorage = localStorage.getItem("formName") || "";
-  const formName = formNameFromStorage.length > 20 
-    ? `${formNameFromStorage.slice(0, 20)}...` 
-    : formNameFromStorage;  
+  const formName =
+    formNameFromStorage.length > 20
+      ? `${formNameFromStorage.slice(0, 20)}...`
+      : formNameFromStorage;
   const formData = {
     formId: id,
     name: formNameFromStorage,
@@ -55,39 +63,42 @@ const CreateForm = () => {
     })),
   };
 
-  const getCreatedForm = async() => {
+  const getCreatedForm = async () => {
     try {
-      const response = await getWorkspaceForm(id)
-      setFillFormData(response.form)
+      const response = await getWorkspaceForm(id);
+      setFillFormData(response.form);
     } catch (error) {
       toast.error(error.message || "Error while hetting the form");
-  }
-}
+    }
+  };
 
   const handleSaveForm = async () => {
-    if(fillFormData){
-      return toast.error("The form has been created with fields. You can now share it.")
+    if (fillFormData) {
+      return toast.error(
+        "The form has been created with fields. You can now share it."
+      );
     }
     if (!formName.trim() || additem.length === 0) {
       toast.error("Form name and at least one element are required.");
       return;
     }
-    if(!additem.find((e) => e.item === "inputButton")){
-      return toast.error("A form should have a submit button.")
+    if (!additem.find((e) => e.item === "inputButton")) {
+      return toast.error("A form should have a submit button.");
     }
 
     const hasEmptyContent = additem.some(
-      (item) => 
-        (item.item === "bubbleText" || 
-         item.item === "bubbleImage" || 
-         item.item === "inputText" || 
-         item.item === "inputNumber") && 
+      (item) =>
+        (item.item === "bubbleText" ||
+          item.item === "bubbleImage" ||
+          item.item === "inputText" ||
+          item.item === "inputNumber") &&
         !item.content.trim()
     );
-    
-  
+
     if (hasEmptyContent) {
-      toast.error("Bubbles and Input Text or input number are required fields.");
+      toast.error(
+        "Bubbles and Input Text or input number are required fields."
+      );
       return;
     }
 
@@ -96,7 +107,7 @@ const CreateForm = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": localStorage.getItem("token"),
+          Authorization: localStorage.getItem("token"),
         },
         body: JSON.stringify(formData),
       });
@@ -104,8 +115,8 @@ const CreateForm = () => {
       const data = await response.json();
       if (response.ok) {
         toast.success("Form saved successfully!");
-        getCreatedForm()
-        setAddItem([])
+        getCreatedForm();
+        setAddItem([]);
       } else {
         toast.error(data.message || "Something went wrong");
       }
@@ -114,8 +125,8 @@ const CreateForm = () => {
     }
   };
   useEffect(() => {
-  getCreatedForm()
-  },[])
+    getCreatedForm();
+  }, []);
 
   const handleItemValue = (itemId, value) => {
     setAddItem((prevItems) =>
@@ -125,24 +136,22 @@ const CreateForm = () => {
     );
   };
 
-  const handleGenerateFillFormLink = async() =>{
-    setFormLinkLoading(true)
+  const handleGenerateFillFormLink = async () => {
+    setFormLinkLoading(true);
     try {
-      const response = await getFillFormLink(id)
-      if(response.message === "Form link generated successfully!"){
-        navigator.clipboard
-        .writeText(response.formLink)
-        .then(() => {
+      const response = await getFillFormLink(id);
+      if (response.message === "Form link generated successfully!") {
+        navigator.clipboard.writeText(response.formLink).then(() => {
           toast.success("Link copied to clipboard!");
-        })
+        });
       }
     } catch (error) {
       toast.error("Error saving form:", error);
-    }finally{
-      setFormLinkLoading(false)
+    } finally {
+      setFormLinkLoading(false);
     }
-  }
-  const userId = localStorage.getItem("userId")
+  };
+  const userId = localStorage.getItem("userId");
   return (
     <>
       <div
@@ -163,7 +172,12 @@ const CreateForm = () => {
             <div className={styles.flow}>
               <p>Flow</p>
             </div>
-            <p onClick={() => navigate(`/response/${id}`)} className={toggle ? "" : styles.light}>Response</p>
+            <p
+              onClick={() => navigate(`/response/${id}`)}
+              className={toggle ? "" : styles.light}
+            >
+              Response
+            </p>
           </div>
           <div className={styles.saveAndShare}>
             <div className={styles.lightAndDark}>
@@ -174,13 +188,25 @@ const CreateForm = () => {
               <p className={toggle ? "" : styles.light}>Dark</p>
             </div>
             <div className={styles.saveShareButton}>
-              
-              {fillFormData ? <button onClick={() => handleGenerateFillFormLink()} className={styles.shareButton1}>{formLinkLoading ? "Loading..." : "Share"}</button> : <button className={styles.shareButton2}>Share</button>}
-              
+              {fillFormData ? (
+                <button
+                  onClick={() => handleGenerateFillFormLink()}
+                  className={styles.shareButton1}
+                >
+                  {formLinkLoading ? "Loading..." : "Share"}
+                </button>
+              ) : (
+                <button className={styles.shareButton2}>Share</button>
+              )}
+
               <button onClick={handleSaveForm} className={styles.saveButton}>
                 Save
               </button>
-              <img onClick={() => navigate(`/dashboard/${userId}`)} src={closeImage} alt="close-image" />
+              <img
+                onClick={() => navigate(`/dashboard/${userId}`)}
+                src={closeImage}
+                alt="close-image"
+              />
             </div>
           </div>
         </nav>
@@ -404,7 +430,8 @@ const CreateForm = () => {
                       placeholder="Click here to edit"
                       value={allItem.content}
                       onChange={(e) =>
-                        handleItemValue(allItem.itemId, e.target.value)}
+                        handleItemValue(allItem.itemId, e.target.value)
+                      }
                     />
                     <img
                       src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735390332/SVG_mzm9a0.png"
@@ -436,7 +463,8 @@ const CreateForm = () => {
                       required
                       placeholder="Click here to edit"
                       onChange={(e) =>
-                        handleItemValue(allItem.itemId, e.target.value)}
+                        handleItemValue(allItem.itemId, e.target.value)
+                      }
                     />
                     <img
                       src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735390331/SVG_2_boz0wo.png"
@@ -468,7 +496,8 @@ const CreateForm = () => {
                       required
                       placeholder="Click here to edit"
                       onChange={(e) =>
-                        handleItemValue(allItem.itemId, e.target.value)}
+                        handleItemValue(allItem.itemId, e.target.value)
+                      }
                     />
                     <img
                       src="https://res.cloudinary.com/dlmwurg10/image/upload/v1735390329/SVG_3_rq2imb.png"
