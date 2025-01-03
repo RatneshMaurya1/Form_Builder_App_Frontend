@@ -67,7 +67,7 @@ const Login = () => {
              </div>
              <div className={styles.inputs}>
                  <p>Password</p>
-                 <input type="text" placeholder='Enter your password' value={formData.password} onChange={(e) => setFormData({...formData,password:e.target.value})}/>
+                 <input type="password" placeholder='Enter your password' value={formData.password} onChange={(e) => setFormData({...formData,password:e.target.value})}/>
              </div>
              <button type='submit' disabled={loading}>{loading ? "Loading..." : "Sign Up"}</button>
          </form>

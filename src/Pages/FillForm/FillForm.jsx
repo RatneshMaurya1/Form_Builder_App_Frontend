@@ -280,7 +280,7 @@ const FillForm = () => {
                             ? styles.dark
                             : ""
                         }
-                        disabled={true}
+                        disabled={loading}
                         onClick={() => handleButtonClick(element.id)}
                       >
                         {loading ? (
@@ -323,7 +323,7 @@ const FillForm = () => {
                             : ""
                         }
                         onClick={() => handleButtonClick(element.id)}
-                        disabled={true}
+                        disabled={loading}
                       >
                         {loading ? (
                           "wait..."
