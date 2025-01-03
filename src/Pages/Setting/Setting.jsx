@@ -41,10 +41,6 @@ const Setting = () => {
       toast.error("Please enter a valid email address");
       return;
     }
-    if (formData.newPassword.length < 8) {
-      toast.error("Password must be at least 8 characters long");
-      return;
-    }
     setLoading(true);
     try {
       const response = await userUpdateData(formData);
