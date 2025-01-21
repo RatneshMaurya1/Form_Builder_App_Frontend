@@ -248,7 +248,7 @@ const Dashboard = () => {
     }
 
     if (selectedValue === name) {
-      return navigate(`/dashboard/}${defaultDashboard}`);
+      return navigate(`/dashboard/${defaultDashboard}`);
     }
 
     const selectedWorkspace = workspace?.find(
