@@ -69,10 +69,10 @@ const Login = () => {
                  <p>Password</p>
                  <input type="password" placeholder='Enter your password' value={formData.password} onChange={(e) => setFormData({...formData,password:e.target.value})}/>
              </div>
-             <button type='submit' disabled={loading}>{loading ? "Loading..." : "Sign Up"}</button>
+             <button type='submit' disabled={loading}>{loading ? "Loading..." : "Sign In"}</button>
          </form>
          <h3>OR</h3>
-         <button><div className={styles.googleImage}><img src={googleIcon} alt="google-image" /></div><span>Sign Up with Google</span></button>
+         <button><div className={styles.googleImage}><img src={googleIcon} alt="google-image" /></div><span>Sign In with Google</span></button>
          <h4>Don’t have an account? <span onClick={() => navigate("/signup")}>Register now</span></h4>
          <img className={styles.ellipse1Img} src={ellipse1} alt="ellipse1-image" />
          <img className={styles.ellipse2Img} src={ellipse2} alt="ellipse2-image" />
